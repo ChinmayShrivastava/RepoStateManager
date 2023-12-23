@@ -5,3 +5,5 @@ run these in order
 3. init-state
 4. tree
 5. run init-state again with `--update true`
+6. elements
+7. web
