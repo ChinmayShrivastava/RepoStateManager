@@ -3,7 +3,9 @@ Return the extracted info as triplets for updating a graph. E.g. (subject, predi
 Prefer the available predicates, add a new one if required
 ------------
 Available predicates:
-<<AVAILABLE_PREDICATES>>
+- EXTERNAL_DEPENDENCY
+- REQUIRED_TYPE
+- UNKNOWN
 ------------
 Example1:
 Code snippet:
@@ -34,9 +36,10 @@ Code triplets:
 (split_files, REQUIRED_TYPE, list of strings where each string separates string by the delimiter '##')
 ------------
 Code snippet:
-<<CODE_SNIPPET>>
+{code}
 Code triplets:
 """
+
 PROMPT_TO_EXPLAIN_CODE = """Attached you will find a code snippet from a code base. Explain in very simple and concise terms what the code does.
 ------------
 Example1:
@@ -64,6 +67,8 @@ Explanation:
 The function extract_education_and_experience takes in a list of string elements. Splits each element into two sections by the delimiter "##" which represent education and experience respectively. It then returns a list of lists, where each nested list element contains the education and experience sections respectively.
 ------------
 Code snippet:
-<<CODE_SNIPPET>>
+{code}
 Explanation:
 """
+
+PROMPT_TO_UPDATE_WEB = """"""

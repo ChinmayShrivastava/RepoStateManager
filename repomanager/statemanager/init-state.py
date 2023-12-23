@@ -87,7 +87,7 @@ def initialize_state(repo_name, update):
             
             # add the element node if it doesn't exist
             if not G.has_node(ele_name):
-                G.add_node(ele_name, name=ele_name, type='function', index=ele_index, elementname=file)
+                G.add_node(ele_name, name=ele_name, type=ele_type, index=ele_index, elementname=file)
             
             # if the node exists, check if the edge exists
             if not G.has_edge(og_file_name, ele_name):
