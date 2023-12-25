@@ -6,7 +6,7 @@ import logging
 from llms.completion import get_llm
 from prompts.general import PROMPT_TO_GENERATE_SCHEMA # format the triplets
 import random
-from vspace.chromadb import return_collection
+from repomanager.statemanager.vspace._chromadb import return_collection
 from standard.extract import get_imports_and_g_variables
 
 # create meta for the edge types - schema

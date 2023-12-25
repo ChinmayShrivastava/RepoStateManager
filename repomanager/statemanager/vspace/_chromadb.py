@@ -3,8 +3,8 @@ from chromadb import PersistentClient, HttpClient
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 load_dotenv()
-import click
 
+# TODO: make sure the collection names are unique per repo
 def return_collection(path=None, collection_name=None):
     assert path is not None, "Path isn't specified"
     assert collection_name is not None, "Collection name isn't specified"

@@ -1,0 +1,9 @@
+{
+    "function": {
+        "isElement": true,
+        "isNode": true,
+        "getCode": true,
+        "getExplanation": false,
+        "getLevelTwo": false
+    }
+}

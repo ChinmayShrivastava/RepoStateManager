@@ -7,3 +7,5 @@ run these in order
 5. run init-state again with `--update true`
 6. elements
 7. web
+
+// dispatch was currently written manually, automate it.
