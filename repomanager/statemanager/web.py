@@ -6,7 +6,7 @@ import logging
 from llms.completion import get_llm
 from standard.check import is_local
 from standard.extract import get_imports, get_imports_and_g_variables
-from graph.actions import get_unknown_triplets
+from graph.actions import get_unknown_triplets, graph_preprocess
 
 logging.basicConfig(level=logging.INFO)
 
@@ -117,8 +117,11 @@ def spread_web(repo_name):
                             logging.info(f'Added edge {importfrom_} -> {_filename}')
                     continue
 
-        # get the imports and the global variables
-        context = get_imports_and_g_variables(filename, repo_id)
+        # # get the imports and the global variables
+        # context = get_imports_and_g_variables(filename, repo_id)
+
+        # TODO: clear the unknowns from the graph
+        G = graph_preprocess(G)
 
         pickle.dump(G, open(f'state/{repo_id}/state_0.pkl', 'wb'))
 

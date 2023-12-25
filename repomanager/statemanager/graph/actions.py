@@ -60,11 +60,49 @@ def get_unknown_triplets(G, node):
     """
     # get the edges if the type of the edge is 'UNKNOWN'
     edges = G.edges(data=True)
+    end_nodes = []
     triplets = []
     for edge in edges:
         if edge[2]['type'] == 'UNKNOWN':
             triplets.append((edge[0], edge[2]['type'], edge[1]))
+            end_nodes.append(edge[1])
+    # if end_node has a edge with type 'UNKNOWN', then add the edge
+    for end_node in end_nodes:
+        edges = G.edges(end_node, data=True)
+        for edge in edges:
+            if edge[2]['type'] == 'UNKNOWN':
+                triplets.append((edge[0], edge[2]['type'], edge[1]))
     return triplets
+
+# remove multiple unknowns
+# for edges in G.edges(data=True)
+# remove one edge and the end node if the edge type is 'UNKNOWN' and the end node is of the re type 'UNKNOWN_something' and this appears >1 for the same start node
+def remove_duplicates(G):
+    """
+    Removes the duplicate edges
+    """
+    # remove all nodes that start with 'UNKNOWN_' and point all incoming edges to the 'UNKNOWN' node instead
+    # create the 'UNKNOWN' node if it doesn't exist
+    if 'UNKNOWN' not in G.nodes():
+        G.add_node('UNKNOWN')
+    nodes_to_remove = []
+    edges_to_remove = []
+    for edge in G.edges(data=True):
+        if edge[2]['type'] == 'UNKNOWN':
+            if edge[1].startswith('UNKNOWN'):
+                nodes_to_remove.append(edge[1])
+                edges_to_remove.append(edge)
+    # remove the edges
+    G.remove_edges_from(edges_to_remove)
+    # remove the nodes
+    G.remove_nodes_from(nodes_to_remove)
+    print('Removed {} nodes'.format(len(nodes_to_remove)))
+
+def graph_preprocess(G):
+    remove_duplicates(G)
+    # we don't want to delete unnecessary edges, like for example, if get_embeddings is being called somewhere, and 
+    return G
+
 
 # def get_imports(G, element):
 #     """

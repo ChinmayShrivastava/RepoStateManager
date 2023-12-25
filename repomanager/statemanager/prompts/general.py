@@ -71,4 +71,31 @@ Code snippet:
 Explanation:
 """
 
-PROMPT_TO_UPDATE_WEB = """"""
+PROMPT_TO_GENERATE_SCHEMA = """Attached you will find some triplets from a information graph of the form (start node, edge type, end node).
+The triplets have the same edge type.
+Try to come up with a general explanation of the edge type to track the schema.
+Do not out put anything but the triplet.
+----------
+Example:
+Triplets:
+('root', 'root-to-dir', 'embed.py')
+('root', 'root-to-dir', 'chunker.py')
+('root', 'root-to-dir', '__init__.py')
+('root', 'root-to-dir', 'update_database.py')
+('root', 'root-to-dir', 'prompts.py')
+('root', 'root-to-dir', 'agents.py')
+Schema: (root-directory, root-to-dir, paths in the base code directory)
+----------
+Example:
+Triplets:
+('embed.py', 'function', 'embed_pipeline')
+('chunker.py', 'function', 'extract_education_and_experience')
+('update_database.py', 'function', 'template_upload_pipeline')
+('agents.py', 'function', 'create_thread')
+('chunker.py', 'function', 'extract_education_and_experience')
+Schema: (file name, function, a function definition that the file contains)
+----------
+Use the examples to output the schema for the input information
+Triplets:
+{triplets}
+Schema:"""

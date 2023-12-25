@@ -16,7 +16,7 @@ def initialize_state(repo_name, update):
 
     if not update:
 
-        G = nx.Graph()
+        G = nx.DiGraph()
 
         # create a root node with the metadata name=root, type=folder
         G.add_node('root', name='root', type='folder')
