@@ -1,0 +1,11 @@
+{
+    "function-call": "(function name, function-call, function that is called)",
+    "imports_directly": "(file name, library, a library that the file imports directly)",
+    "is_a_submodule_of": "(submodule name, is_a_submodule_of, parent submodule name)",
+    "REQUIRED_TYPE": "(open_data_json, REQUIRED_TYPE, a string representing the filename selected by the user)\n(store_data, REQUIRED_TYPE, a filename)\n(store_data, REQUIRED_TYPE, education_experience_0)\n(split_files, REQUIRED_TYPE, list of strings where each string separates string by the delimiter '##')\n(files, REQUIRED_TYPE, a list of strings)\n(edu_exp_element, REQUIRED_TYPE, a list or tuple with two elements)\n(get_embedding, REQUIRED_TYPE, list)\n(open_data_json, REQUIRED_TYPE, a dictionary representing the data loaded from the selected file)\n(split_files, REQUIRED_TYPE, a list of files)\n(open_files, REQUIRED_TYPE, a folder path)",
+    "function": "(file name, function, a function definition that the file contains)",
+    "root-to-dir": "(root directory, root-to-dir, paths in the base code directory)",
+    "UNKNOWN": "(unknown function, unknown edge type, unknown end node)",
+    "imports_from": "(file name, edge type, module or package that is imported)",
+    "EXTERNAL_DEPENDENCY": "(EXTERNAL_DEPENDENCY, function, a function that the external dependency provides)"
+}
