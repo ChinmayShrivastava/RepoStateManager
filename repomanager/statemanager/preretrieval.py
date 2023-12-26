@@ -6,7 +6,7 @@ import logging
 from llms.completion import get_llm
 from prompts.general import PROMPT_TO_GENERATE_SCHEMA # format the triplets
 import random
-from repomanager.statemanager.vspace._chromadb import return_collection
+from vspace._chromadb import return_collection
 from standard.extract import get_imports_and_g_variables
 
 # create meta for the edge types - schema
@@ -63,7 +63,7 @@ def retrieval_preprocess(repo_name):
     metadata = []
     ids = []
     for node in G.nodes(data=True):
-        if 'elementname' in node[1].keys():
+        if 'explanation' in node[1].keys():
             explanations.append(node[1]['explanation'])
             metadata.append({
                 'name': node[0],
@@ -96,6 +96,9 @@ def retrieval_preprocess(repo_name):
     # for each file, read the file and update the graph
     for file in files:
 
+        if not file.endswith('.py'):
+            continue
+
         filename = file.split('.')[0]
         eles = filename.split('!!')
         # TODO: make sure that if the file is a directory, then it is accounted for
@@ -107,7 +110,7 @@ def retrieval_preprocess(repo_name):
         code_snippet = open(os.path.join(elements_folder, file)).read()
 
         # file_code = open(os.path.join('data/flattened', repo_id, 'files/', og_file_name)).read()
-        global_vars_imports = get_imports_and_g_variables('/'+og_file_name, repo_id)
+        global_vars_imports = get_imports_and_g_variables(og_file_name, repo_id)
 
         code_snippet = global_vars_imports + '\n' + code_snippet
 

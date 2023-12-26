@@ -1,0 +1,16 @@
+{
+    "class": "(file name, class, a class definition that the file contains)",
+    "imports_directly": "(file name, edge type, module or class that is imported directly)",
+    "dir-to-file": "(directory name, dir-to-file, file name)",
+    "root-to-dir": "(root-directory, root-to-dir, paths in the base code directory)",
+    "class-instance": "(class-instance, edge type, class or method name)",
+    "imports_from": "(file name, imports_from, the file or module that is being imported)",
+    "DEFAULT": "(SuperagentEnvironment, \"https://api.beta.superagent.sh\", DEFAULT)",
+    "class-method": "(class name, method type, method name)",
+    "EXTERNAL_DEPENDENCY": "(PrismaModelsWorkflow, EXTERNAL_DEPENDENCY, external dependencies used in the PrismaModelsWorkflow)",
+    "is_a_submodule_of": "(module name, is_a_submodule_of, parent module name)",
+    "REQUIRED_TYPE": "(class name, attribute, attribute type)",
+    "function-call": "(function caller, function name, function-call)",
+    "function": "(file name, function, a function definition that the file contains)",
+    "dir-to-dir": "(directory name, dir-to-dir, another directory in the codebase)"
+}

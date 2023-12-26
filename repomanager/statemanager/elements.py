@@ -8,6 +8,7 @@ from llms.completion import get_llm
 import datetime
 from llms.parse import parse_tripets
 from graph.actions import add_triplets
+import ast
 
 # TODO: Make sure that the triplets don't contain information related to the function-calls, because they have
 # already been added to the graph
@@ -53,7 +54,7 @@ def update_elements(repo_name):
         filename = file.split('.')[0]
         eles = filename.split('!!')
         # TODO: make sure that if the file is a directory, then it is accounted for
-        og_file_name = eles[0]+'.py'
+        og_file_name = eles[0].split('@@')[-1]+'.py'
         ele_type = eles[1]
         ele_index = eles[2]
         ele_name = eles[3]
@@ -68,32 +69,84 @@ def update_elements(repo_name):
     logging.info(f'extracted element info from {len(temp_dict)} files')
 
     for file in temp_dict.keys():
-        click.echo(f'Updating {temp_dict[file]["name"]} of type {temp_dict[file]["type"]}')
-        if not G.has_node(temp_dict[file]['og_file_name']):
-            # if the og_file_name is not in the graph, echo error
-            logging.info('Error: {} does not exist in the graph'.format(temp_dict[file]['og_file_name']))
-            return
-        if not G.has_node(temp_dict[file]['name']):
-            # if the name node is not in the graph, echo error
-            logging.info(f'Error: {temp_dict[file]["name"]} of type {temp_dict[file]["type"]} does not exist in the graph')
-            return
-        if not G.has_edge(temp_dict[file]['og_file_name'], temp_dict[file]['name']):
-            # if the edge does not exist, echo error
-            logging.info('Error: edge from {} to {} does not exist in the graph'.format(temp_dict[file]['og_file_name'], temp_dict[file]['name']))
-        # get code snippet
-        code_snippet = open(os.path.join(elements_folder, file)).read()
-        # if the node doesn't have an explanation, generate one
-        if not G.nodes[temp_dict[file]['name']].get('explanation'):
-            logging.info(f'Generating explanation for {temp_dict[file]["name"]} of type {temp_dict[file]["type"]}')
-            explanation_prompt = PROMPT_TO_EXPLAIN_CODE.format(code=code_snippet)
-            explanation = llm.complete(explanation_prompt).text
-            # update the node metadata with the explanation
-            G.nodes[temp_dict[file]['name']]['explanation'] = explanation
+        if temp_dict[file]['type'] != 'class':
+            click.echo(f'Updating {temp_dict[file]["name"]} of type {temp_dict[file]["type"]}')
+            if not G.has_node(temp_dict[file]['og_file_name']):
+                # if the og_file_name is not in the graph, echo error
+                logging.info('Error: {} does not exist in the graph'.format(temp_dict[file]['og_file_name']))
+                return
+            if not G.has_node(temp_dict[file]['name']):
+                # if the name node is not in the graph, echo error
+                logging.info(f'Error: {temp_dict[file]["name"]} of type {temp_dict[file]["type"]} does not exist in the graph')
+                return
+            if not G.has_edge(temp_dict[file]['og_file_name'], temp_dict[file]['name']):
+                # if the edge does not exist, echo error
+                logging.info('Error: edge from {} to {} does not exist in the graph'.format(temp_dict[file]['og_file_name'], temp_dict[file]['name']))
+            # get code snippet
+            code_snippet = open(os.path.join(elements_folder, file)).read()
+            # if the node doesn't have an explanation, generate one
+            if not G.nodes[temp_dict[file]['name']].get('explanation'):
+                logging.info(f'Generating explanation for {temp_dict[file]["name"]} of type {temp_dict[file]["type"]}')
+                explanation_prompt = PROMPT_TO_EXPLAIN_CODE.format(code=code_snippet)
+                explanation = llm.complete(explanation_prompt).text
+                # update the node metadata with the explanation
+                G.nodes[temp_dict[file]['name']]['explanation'] = explanation
+        else:
+            # read the class file, parst it into an ast tree
+            _code = open(os.path.join(elements_folder, file)).read()
+            codelines = open(os.path.join(elements_folder, file)).read().split('\n')
+            try:
+                asttree = ast.parse(_code)
+            except IndentationError:
+                # remove the first 4 spaces from each line
+                _code = '\n'.join([line[4:] for line in _code.split('\n')])
+                codelines = _code.split('\n')
+                asttree = ast.parse(_code)
+            # get the class name
+            class_name = [node.name for node in ast.walk(asttree) if isinstance(node, ast.ClassDef)][0]
+            # get the class method names, start line and end line
+            class_methods = [(node.name, '\n'.join(codelines[node.lineno-1:node.end_lineno])) for node in ast.walk(asttree) if isinstance(node, ast.FunctionDef)]
+            # method_codes = [_code[lineno-1:end_lineno] for _, lineno, end_lineno in class_methods]
+            # replace the medhod code with the method name in the class code
+            for method_name, method_code in class_methods:
+                _code = _code.replace(method_code, 'Method Goes Here: '+method_name)
+            if not G.has_node(temp_dict[file]['og_file_name']):
+                # if the og_file_name is not in the graph, echo error
+                logging.info('Error: {} does not exist in the graph'.format(temp_dict[file]['og_file_name']))
+                return
+            if not G.has_node(class_name):
+                # if the name node is not in the graph, echo error
+                logging.info(f'Error: {class_name} of type {temp_dict[file]["type"]} does not exist in the graph')
+                return
+            if not G.has_edge(temp_dict[file]['og_file_name'], class_name):
+                # if the edge does not exist, echo error
+                logging.info('Error: edge from {} to {} does not exist in the graph'.format(temp_dict[file]['og_file_name'], class_name))
+            # if the node doesn't have an explanation, generate one
+            if not G.nodes[class_name].get('explanation'):
+                logging.info(f'Generating explanation for {class_name} of type {temp_dict[file]["type"]}')
+                explanation_prompt = PROMPT_TO_EXPLAIN_CODE.format(code=_code)
+                explanation = llm.complete(explanation_prompt).text
+                # update the node metadata with the explanation
+                G.nodes[class_name]['explanation'] = explanation
+            # add explanation for each method
+            for method_name, method_code in class_methods:
+                if not G.has_node(method_name):
+                    # if the name node is not in the graph, echo error
+                    logging.info(f'Error: {method_name} of type {temp_dict[file]["type"]} does not exist in the graph')
+                    return
+                if not G.nodes[method_name].get('explanation'):
+                    logging.info(f'Generating explanation for {method_name} of type {temp_dict[file]["type"]}')
+                    explanation_prompt = PROMPT_TO_EXPLAIN_CODE.format(code=method_code)
+                    explanation = llm.complete(explanation_prompt).text
+                    # update the node metadata with the explanation
+                    G.nodes[method_name]['explanation'] = explanation
+                # add edge from class to method
+                if not G.has_edge(class_name, method_name):
+                    G.add_edge(class_name, method_name, type='class-method')
 
         # save the graph as a pickle file
         with open(os.path.join('state', repo_id, 'state_0.pkl'), 'wb') as f:
             pickle.dump(G, f)
-
 
         # if the node doesn't have an info, generate one
         # TODO: the info this way is only updated once, to update it again, we need to pass an argument to command and use it to
@@ -102,6 +155,8 @@ def update_elements(repo_name):
             i = 0
             while i < 2:
                 try:
+                    if temp_dict[file]['type'] == 'class':
+                        code_snippet = _code
                     info_prompt = PROMPT_TO_EXTRACT_INFO_FROM_CODE.format(code=code_snippet)
                     info = llm.complete(info_prompt).text
                     click.echo(click.style(info, fg='green'))

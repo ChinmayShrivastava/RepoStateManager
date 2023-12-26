@@ -1,0 +1,1 @@
+{"functions": ["open_files", "split_files", "extract_education_and_experience", "final_chunks", "store_data", "chunking_pipeline"], "imports": ["os", "json"], "import_froms": []}

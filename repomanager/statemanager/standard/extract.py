@@ -15,9 +15,9 @@ def get_imports(code):
 # gets the imports and the global variables
 def get_imports_and_g_variables(filename, repo_id):
     # assert that the file name starts with /
-    assert filename[0] == '/' and filename[-3:] == '.py'
+    assert filename[-3:] == '.py'
     # read the file from data/flattened/repo_id/files+filename and get the code
-    with open(f'data/flattened/{repo_id}/files'+filename, 'r') as f:
+    with open(f'data/flattened/{repo_id}/files/'+filename, 'r') as f:
         code = f.read()
     # get the imports and the global variables
     return remove_functions_and_classes(code)

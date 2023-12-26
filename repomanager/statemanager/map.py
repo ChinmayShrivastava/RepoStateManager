@@ -1,6 +1,5 @@
 import click
 import os
-import shutil
 import json
 
 repo_map = json.load(open('./repo_map.json'))
@@ -47,13 +46,16 @@ def flatten_repo(repo_name):
                         continue
                     directory = filename.split(f'{repo_id}')[1]
                     f_.write(directory + '\n')
+                    # filename for the flattened file
+                    # replace / with !!
+                    _file = directory.replace('/', '@@')
                     # for each file, copy its contents, and save it into a .txt file with the name os.path.join(root, file)
                     # in the files folder
                     list_of_files_that_failed = []
                     with open(filename, 'r') as f2:
                         try:
                             content = f2.read()
-                            with open(os.path.join(files_folder, file), 'w') as f3:
+                            with open(os.path.join(files_folder, _file), 'w') as f3:
                                 f3.write(content)
                         except:
                             continue

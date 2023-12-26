@@ -1,0 +1,893 @@
+{
+    "type": "Module",
+    "body": [
+        {
+            "type": "ImportFrom",
+            "module": "__future__",
+            "names": [
+                {
+                    "type": "alias",
+                    "name": "annotations",
+                    "asname": null
+                }
+            ],
+            "level": 0
+        },
+        {
+            "type": "Import",
+            "names": [
+                {
+                    "type": "alias",
+                    "name": "datetime",
+                    "asname": "dt"
+                }
+            ]
+        },
+        {
+            "type": "Import",
+            "names": [
+                {
+                    "type": "alias",
+                    "name": "typing",
+                    "asname": null
+                }
+            ]
+        },
+        {
+            "type": "ImportFrom",
+            "module": "core.datetime_utils",
+            "names": [
+                {
+                    "type": "alias",
+                    "name": "serialize_datetime",
+                    "asname": null
+                }
+            ],
+            "level": 2
+        },
+        {
+            "type": "Try",
+            "body": [
+                {
+                    "type": "Import",
+                    "names": [
+                        {
+                            "type": "alias",
+                            "name": "pydantic.v1",
+                            "asname": "pydantic"
+                        }
+                    ]
+                }
+            ],
+            "handlers": [
+                {
+                    "type": {
+                        "type": "Name",
+                        "id": "ImportError",
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "name": null,
+                    "body": [
+                        {
+                            "type": "Import",
+                            "names": [
+                                {
+                                    "type": "alias",
+                                    "name": "pydantic",
+                                    "asname": null
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "orelse": [],
+            "finalbody": []
+        },
+        {
+            "type": "ClassDef",
+            "name": "PrismaModelsAgentTool",
+            "bases": [
+                {
+                    "type": "Attribute",
+                    "value": {
+                        "type": "Name",
+                        "id": "pydantic",
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "attr": "BaseModel",
+                    "ctx": {
+                        "type": "Load"
+                    }
+                }
+            ],
+            "keywords": [],
+            "body": [
+                {
+                    "type": "Expr",
+                    "value": {
+                        "type": "Constant",
+                        "value": "\n    Represents a AgentTool record\n    ",
+                        "kind": null
+                    }
+                },
+                {
+                    "type": "AnnAssign",
+                    "target": {
+                        "type": "Name",
+                        "id": "agent_id",
+                        "ctx": {
+                            "type": "Store"
+                        }
+                    },
+                    "annotation": {
+                        "type": "Name",
+                        "id": "str",
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "value": {
+                        "type": "Call",
+                        "func": {
+                            "type": "Attribute",
+                            "value": {
+                                "type": "Name",
+                                "id": "pydantic",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "attr": "Field",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "args": [],
+                        "keywords": [
+                            {
+                                "type": "keyword",
+                                "arg": "alias",
+                                "value": {
+                                    "type": "Constant",
+                                    "value": "agentId",
+                                    "kind": null
+                                }
+                            }
+                        ]
+                    },
+                    "simple": 1
+                },
+                {
+                    "type": "AnnAssign",
+                    "target": {
+                        "type": "Name",
+                        "id": "tool_id",
+                        "ctx": {
+                            "type": "Store"
+                        }
+                    },
+                    "annotation": {
+                        "type": "Name",
+                        "id": "str",
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "value": {
+                        "type": "Call",
+                        "func": {
+                            "type": "Attribute",
+                            "value": {
+                                "type": "Name",
+                                "id": "pydantic",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "attr": "Field",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "args": [],
+                        "keywords": [
+                            {
+                                "type": "keyword",
+                                "arg": "alias",
+                                "value": {
+                                    "type": "Constant",
+                                    "value": "toolId",
+                                    "kind": null
+                                }
+                            }
+                        ]
+                    },
+                    "simple": 1
+                },
+                {
+                    "type": "AnnAssign",
+                    "target": {
+                        "type": "Name",
+                        "id": "agent",
+                        "ctx": {
+                            "type": "Store"
+                        }
+                    },
+                    "annotation": {
+                        "type": "Subscript",
+                        "value": {
+                            "type": "Attribute",
+                            "value": {
+                                "type": "Name",
+                                "id": "typing",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "attr": "Optional",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "slice": {
+                            "type": "Name",
+                            "id": "PrismaModelsAgent",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "value": null,
+                    "simple": 1
+                },
+                {
+                    "type": "AnnAssign",
+                    "target": {
+                        "type": "Name",
+                        "id": "tool",
+                        "ctx": {
+                            "type": "Store"
+                        }
+                    },
+                    "annotation": {
+                        "type": "Subscript",
+                        "value": {
+                            "type": "Attribute",
+                            "value": {
+                                "type": "Name",
+                                "id": "typing",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "attr": "Optional",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "slice": {
+                            "type": "Name",
+                            "id": "PrismaModelsTool",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "value": null,
+                    "simple": 1
+                },
+                {
+                    "type": "AnnAssign",
+                    "target": {
+                        "type": "Name",
+                        "id": "created_at",
+                        "ctx": {
+                            "type": "Store"
+                        }
+                    },
+                    "annotation": {
+                        "type": "Attribute",
+                        "value": {
+                            "type": "Name",
+                            "id": "dt",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "attr": "datetime",
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "value": {
+                        "type": "Call",
+                        "func": {
+                            "type": "Attribute",
+                            "value": {
+                                "type": "Name",
+                                "id": "pydantic",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "attr": "Field",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "args": [],
+                        "keywords": [
+                            {
+                                "type": "keyword",
+                                "arg": "alias",
+                                "value": {
+                                    "type": "Constant",
+                                    "value": "createdAt",
+                                    "kind": null
+                                }
+                            }
+                        ]
+                    },
+                    "simple": 1
+                },
+                {
+                    "type": "AnnAssign",
+                    "target": {
+                        "type": "Name",
+                        "id": "updated_at",
+                        "ctx": {
+                            "type": "Store"
+                        }
+                    },
+                    "annotation": {
+                        "type": "Attribute",
+                        "value": {
+                            "type": "Name",
+                            "id": "dt",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "attr": "datetime",
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "value": {
+                        "type": "Call",
+                        "func": {
+                            "type": "Attribute",
+                            "value": {
+                                "type": "Name",
+                                "id": "pydantic",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "attr": "Field",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "args": [],
+                        "keywords": [
+                            {
+                                "type": "keyword",
+                                "arg": "alias",
+                                "value": {
+                                    "type": "Constant",
+                                    "value": "updatedAt",
+                                    "kind": null
+                                }
+                            }
+                        ]
+                    },
+                    "simple": 1
+                },
+                {
+                    "type": "FunctionDef",
+                    "name": "json",
+                    "args": {
+                        "type": "arguments",
+                        "posonlyargs": [],
+                        "args": [
+                            {
+                                "type": "arg",
+                                "arg": "self",
+                                "annotation": null,
+                                "type_comment": null
+                            }
+                        ],
+                        "vararg": null,
+                        "kwonlyargs": [],
+                        "kw_defaults": [],
+                        "kwarg": {
+                            "type": "arg",
+                            "arg": "kwargs",
+                            "annotation": {
+                                "type": "Attribute",
+                                "value": {
+                                    "type": "Name",
+                                    "id": "typing",
+                                    "ctx": {
+                                        "type": "Load"
+                                    }
+                                },
+                                "attr": "Any",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "type_comment": null
+                        },
+                        "defaults": []
+                    },
+                    "body": [
+                        {
+                            "type": "AnnAssign",
+                            "target": {
+                                "type": "Name",
+                                "id": "kwargs_with_defaults",
+                                "ctx": {
+                                    "type": "Store"
+                                }
+                            },
+                            "annotation": {
+                                "type": "Attribute",
+                                "value": {
+                                    "type": "Name",
+                                    "id": "typing",
+                                    "ctx": {
+                                        "type": "Load"
+                                    }
+                                },
+                                "attr": "Any",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "value": {
+                                "type": "Dict",
+                                "keys": [
+                                    {
+                                        "type": "Constant",
+                                        "value": "by_alias",
+                                        "kind": null
+                                    },
+                                    {
+                                        "type": "Constant",
+                                        "value": "exclude_unset",
+                                        "kind": null
+                                    },
+                                    null
+                                ],
+                                "values": [
+                                    {
+                                        "type": "Constant",
+                                        "value": true,
+                                        "kind": null
+                                    },
+                                    {
+                                        "type": "Constant",
+                                        "value": true,
+                                        "kind": null
+                                    },
+                                    {
+                                        "type": "Name",
+                                        "id": "kwargs",
+                                        "ctx": {
+                                            "type": "Load"
+                                        }
+                                    }
+                                ]
+                            },
+                            "simple": 1
+                        },
+                        {
+                            "type": "Return",
+                            "value": {
+                                "type": "Call",
+                                "func": {
+                                    "type": "Attribute",
+                                    "value": {
+                                        "type": "Call",
+                                        "func": {
+                                            "type": "Name",
+                                            "id": "super",
+                                            "ctx": {
+                                                "type": "Load"
+                                            }
+                                        },
+                                        "args": [],
+                                        "keywords": []
+                                    },
+                                    "attr": "json",
+                                    "ctx": {
+                                        "type": "Load"
+                                    }
+                                },
+                                "args": [],
+                                "keywords": [
+                                    {
+                                        "type": "keyword",
+                                        "arg": null,
+                                        "value": {
+                                            "type": "Name",
+                                            "id": "kwargs_with_defaults",
+                                            "ctx": {
+                                                "type": "Load"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "decorator_list": [],
+                    "returns": {
+                        "type": "Name",
+                        "id": "str",
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "type_comment": null
+                },
+                {
+                    "type": "FunctionDef",
+                    "name": "dict",
+                    "args": {
+                        "type": "arguments",
+                        "posonlyargs": [],
+                        "args": [
+                            {
+                                "type": "arg",
+                                "arg": "self",
+                                "annotation": null,
+                                "type_comment": null
+                            }
+                        ],
+                        "vararg": null,
+                        "kwonlyargs": [],
+                        "kw_defaults": [],
+                        "kwarg": {
+                            "type": "arg",
+                            "arg": "kwargs",
+                            "annotation": {
+                                "type": "Attribute",
+                                "value": {
+                                    "type": "Name",
+                                    "id": "typing",
+                                    "ctx": {
+                                        "type": "Load"
+                                    }
+                                },
+                                "attr": "Any",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "type_comment": null
+                        },
+                        "defaults": []
+                    },
+                    "body": [
+                        {
+                            "type": "AnnAssign",
+                            "target": {
+                                "type": "Name",
+                                "id": "kwargs_with_defaults",
+                                "ctx": {
+                                    "type": "Store"
+                                }
+                            },
+                            "annotation": {
+                                "type": "Attribute",
+                                "value": {
+                                    "type": "Name",
+                                    "id": "typing",
+                                    "ctx": {
+                                        "type": "Load"
+                                    }
+                                },
+                                "attr": "Any",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "value": {
+                                "type": "Dict",
+                                "keys": [
+                                    {
+                                        "type": "Constant",
+                                        "value": "by_alias",
+                                        "kind": null
+                                    },
+                                    {
+                                        "type": "Constant",
+                                        "value": "exclude_unset",
+                                        "kind": null
+                                    },
+                                    null
+                                ],
+                                "values": [
+                                    {
+                                        "type": "Constant",
+                                        "value": true,
+                                        "kind": null
+                                    },
+                                    {
+                                        "type": "Constant",
+                                        "value": true,
+                                        "kind": null
+                                    },
+                                    {
+                                        "type": "Name",
+                                        "id": "kwargs",
+                                        "ctx": {
+                                            "type": "Load"
+                                        }
+                                    }
+                                ]
+                            },
+                            "simple": 1
+                        },
+                        {
+                            "type": "Return",
+                            "value": {
+                                "type": "Call",
+                                "func": {
+                                    "type": "Attribute",
+                                    "value": {
+                                        "type": "Call",
+                                        "func": {
+                                            "type": "Name",
+                                            "id": "super",
+                                            "ctx": {
+                                                "type": "Load"
+                                            }
+                                        },
+                                        "args": [],
+                                        "keywords": []
+                                    },
+                                    "attr": "dict",
+                                    "ctx": {
+                                        "type": "Load"
+                                    }
+                                },
+                                "args": [],
+                                "keywords": [
+                                    {
+                                        "type": "keyword",
+                                        "arg": null,
+                                        "value": {
+                                            "type": "Name",
+                                            "id": "kwargs_with_defaults",
+                                            "ctx": {
+                                                "type": "Load"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "decorator_list": [],
+                    "returns": {
+                        "type": "Subscript",
+                        "value": {
+                            "type": "Attribute",
+                            "value": {
+                                "type": "Name",
+                                "id": "typing",
+                                "ctx": {
+                                    "type": "Load"
+                                }
+                            },
+                            "attr": "Dict",
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "slice": {
+                            "type": "Tuple",
+                            "elts": [
+                                {
+                                    "type": "Name",
+                                    "id": "str",
+                                    "ctx": {
+                                        "type": "Load"
+                                    }
+                                },
+                                {
+                                    "type": "Attribute",
+                                    "value": {
+                                        "type": "Name",
+                                        "id": "typing",
+                                        "ctx": {
+                                            "type": "Load"
+                                        }
+                                    },
+                                    "attr": "Any",
+                                    "ctx": {
+                                        "type": "Load"
+                                    }
+                                }
+                            ],
+                            "ctx": {
+                                "type": "Load"
+                            }
+                        },
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "type_comment": null
+                },
+                {
+                    "type": "ClassDef",
+                    "name": "Config",
+                    "bases": [],
+                    "keywords": [],
+                    "body": [
+                        {
+                            "type": "Assign",
+                            "targets": [
+                                {
+                                    "type": "Name",
+                                    "id": "frozen",
+                                    "ctx": {
+                                        "type": "Store"
+                                    }
+                                }
+                            ],
+                            "value": {
+                                "type": "Constant",
+                                "value": true,
+                                "kind": null
+                            },
+                            "type_comment": null
+                        },
+                        {
+                            "type": "Assign",
+                            "targets": [
+                                {
+                                    "type": "Name",
+                                    "id": "smart_union",
+                                    "ctx": {
+                                        "type": "Store"
+                                    }
+                                }
+                            ],
+                            "value": {
+                                "type": "Constant",
+                                "value": true,
+                                "kind": null
+                            },
+                            "type_comment": null
+                        },
+                        {
+                            "type": "Assign",
+                            "targets": [
+                                {
+                                    "type": "Name",
+                                    "id": "allow_population_by_field_name",
+                                    "ctx": {
+                                        "type": "Store"
+                                    }
+                                }
+                            ],
+                            "value": {
+                                "type": "Constant",
+                                "value": true,
+                                "kind": null
+                            },
+                            "type_comment": null
+                        },
+                        {
+                            "type": "Assign",
+                            "targets": [
+                                {
+                                    "type": "Name",
+                                    "id": "json_encoders",
+                                    "ctx": {
+                                        "type": "Store"
+                                    }
+                                }
+                            ],
+                            "value": {
+                                "type": "Dict",
+                                "keys": [
+                                    {
+                                        "type": "Attribute",
+                                        "value": {
+                                            "type": "Name",
+                                            "id": "dt",
+                                            "ctx": {
+                                                "type": "Load"
+                                            }
+                                        },
+                                        "attr": "datetime",
+                                        "ctx": {
+                                            "type": "Load"
+                                        }
+                                    }
+                                ],
+                                "values": [
+                                    {
+                                        "type": "Name",
+                                        "id": "serialize_datetime",
+                                        "ctx": {
+                                            "type": "Load"
+                                        }
+                                    }
+                                ]
+                            },
+                            "type_comment": null
+                        }
+                    ],
+                    "decorator_list": []
+                }
+            ],
+            "decorator_list": []
+        },
+        {
+            "type": "ImportFrom",
+            "module": "prisma_models_agent",
+            "names": [
+                {
+                    "type": "alias",
+                    "name": "PrismaModelsAgent",
+                    "asname": null
+                }
+            ],
+            "level": 1
+        },
+        {
+            "type": "ImportFrom",
+            "module": "prisma_models_tool",
+            "names": [
+                {
+                    "type": "alias",
+                    "name": "PrismaModelsTool",
+                    "asname": null
+                }
+            ],
+            "level": 1
+        },
+        {
+            "type": "Expr",
+            "value": {
+                "type": "Call",
+                "func": {
+                    "type": "Attribute",
+                    "value": {
+                        "type": "Name",
+                        "id": "PrismaModelsAgentTool",
+                        "ctx": {
+                            "type": "Load"
+                        }
+                    },
+                    "attr": "update_forward_refs",
+                    "ctx": {
+                        "type": "Load"
+                    }
+                },
+                "args": [],
+                "keywords": []
+            }
+        }
+    ],
+    "type_ignores": []
+}

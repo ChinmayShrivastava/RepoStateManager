@@ -1,0 +1,1 @@
+{"functions": ["get_embedding", "open_data_json", "save_embeddings", "embed_pipeline"], "imports": ["os", "json"], "import_froms": ["langchain.embeddings", "dotenv"]}

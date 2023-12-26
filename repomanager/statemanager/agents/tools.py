@@ -38,7 +38,7 @@ def get_schema():
 
 @tool
 def get_node_information(node_name: str):
-    """takes in a node name that represent a node in the graph and returns the node information"""
+    """takes in a node name representing file, function, imports, etc in the graph and returns the node information"""
     node_name = stringmatch.search_one(node_name)[0]
     string_to_return = ''
     string_to_return += (
@@ -71,6 +71,12 @@ def return_info(
     snode = G.nodes(data=True)[starting_node]
     snodetype = snode['type']
 
+    if snodetype == 'class':
+        snodetype = 'function'
+
+    if snodetype != 'function':
+        return f"Sorry, I can only return information on files. This is a {snodetype}. Try again with a file."
+
     to_dispatch = dispatch[snodetype]
 
     if to_dispatch['getCode']:
@@ -82,6 +88,8 @@ def return_info(
     # if to_dispatch['getExplanation']:
     #     # get the explanation
     #     explanation = snode['explanation']
+            
+    dir_path = elementname.split('!!')[0].replace('@@', '/')+'.py'
 
     _append = get_node_information(starting_node)
 
@@ -89,7 +97,8 @@ def return_info(
     string_to_return += _append
     # add the code to it, explaining what it is
     string_to_return += (
-        'The following is the code related to the node requested in the network graph:\n'
+        'The following is the code related to the node requested in the network graph found in the file represented by the path:\n'
+        'Path: ' + dir_path + '\n'
         '-------------------\n'
     )
     string_to_return += f"{_code}\n"
@@ -97,9 +106,6 @@ def return_info(
 
     return string_to_return
         
-
-
-
 tools = [get_schema, get_node_information, return_info]
 
 if __name__ == "__main__":

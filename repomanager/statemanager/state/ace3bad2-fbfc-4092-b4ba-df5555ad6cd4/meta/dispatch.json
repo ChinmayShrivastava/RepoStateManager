@@ -1,0 +1,16 @@
+{
+    "function": {
+        "isElement": true,
+        "isNode": true,
+        "getCode": true,
+        "getExplanation": false,
+        "getLevelTwo": false
+    },
+    "folder": {
+        "isElement": false,
+        "isNode": true,
+        "getCode": false,
+        "getExplanation": false,
+        "getLevelTwo": false
+    }
+}

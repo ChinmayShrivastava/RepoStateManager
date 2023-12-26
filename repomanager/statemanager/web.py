@@ -32,7 +32,7 @@ def spread_web(repo_name):
 
         _filename = filename.split('/')[-1]
 
-        filepath = os.path.join('data/flattened', repo_id, 'files', filename[1:])
+        filepath = os.path.join('data/flattened', repo_id, 'files/', filename.replace('/', '@@'))
         with open(filepath, 'r') as f:
             # read the code
             code = f.read()
@@ -41,7 +41,11 @@ def spread_web(repo_name):
             # read the lines of the file
             codelines = f.readlines()
 
-        imports, importfroms = get_imports(code)
+        try:
+            imports, importfroms = get_imports(code)
+        except:
+            logging.error(f'Error in getting imports from {filename}')
+            continue
 
         G = pickle.load(open(f'state/{repo_id}/state_0.pkl', 'rb'))
 

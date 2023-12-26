@@ -5,7 +5,6 @@ Prefer the available predicates, add a new one if required
 Available predicates:
 - EXTERNAL_DEPENDENCY
 - REQUIRED_TYPE
-- UNKNOWN
 ------------
 Example1:
 Code snippet:
@@ -22,7 +21,6 @@ Code triplets:
 (add_files, EXTERNAL_DEPENDENCY, file_names_raw)
 (file_names_raw, REQUIRED_TYPE, a dictionary or a type of array of dictionaries with each dictionary item mapping a filename to a string value)
 (add_files, EXTERNAL_DEPENDENCY, client)
-(client, UNKNOWN, UNKNOWN)
 Example2:
 Code snippet:
 def extract_education_and_experience(split_files):

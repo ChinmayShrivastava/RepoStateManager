@@ -1,0 +1,11 @@
+{
+    "is_a_submodule_of": "(submodule name, is_a_submodule_of, parent submodule name)",
+    "imports_directly": "(file name, edge type, module or package that is imported directly)",
+    "imports_from": "(file name, imports_from, a module that is imported by the file)",
+    "REQUIRED_TYPE": "(store_data, a list of education and experience data, REQUIRED_TYPE)\n(extract_education_and_experience, a list of file objects_0, REQUIRED_TYPE)\n(split_files, a list of file objects, REQUIRED_TYPE)\n(edu_exp_element, a list or tuple with two elements, REQUIRED_TYPE)\n(store_data, a string representing the filename, REQUIRED_TYPE)\n(split_files, list of strings where each string separates string by the delimiter '##', REQUIRED_TYPE)\n(open_files, a string representing the folder path, REQUIRED_TYPE)\n(get_embedding, embeddings_model, REQUIRED_TYPE)\n(files, a list of strings, REQUIRED_TYPE)\n(open_files, a string representing the folder name, REQUIRED_TYPE)",
+    "root-to-dir": "(root-directory, root-to-dir, paths in the base code directory)",
+    "EXTERNAL_DEPENDENCY": "(function name, input parameter, type of external dependency)",
+    "function-call": "(function name, function-call, function that is called)",
+    "function": "(file name, function, a function definition that the file contains)",
+    "UNKNOWN": "(input, UNKNOWN, UNKNOWN)\n(filename, UNKNOWN, UNKNOWN)\n(get_embedding, batch_size, UNKNOWN)\n(store_data, filename_0, UNKNOWN)\n(store_data, input_1, UNKNOWN)\n(store_data, json.dump, UNKNOWN)\n(open_embeddings_json, json.load, UNKNOWN)\n(input, 'Enter file name: ', UNKNOWN)\n(filename, 'data.json', UNKNOWN)"
+}

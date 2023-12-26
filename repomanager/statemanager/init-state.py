@@ -75,7 +75,7 @@ def initialize_state(repo_name, update):
             filename = file.split('.')[0]
             eles = filename.split('!!')
             # TODO: make sure that if the file is a directory, then it is accounted for
-            og_file_name = eles[0]+'.py'
+            og_file_name = eles[0].split('@@')[-1]+'.py'
             ele_type = eles[1]
             ele_index = eles[2]
             ele_name = eles[3]
@@ -93,9 +93,51 @@ def initialize_state(repo_name, update):
             if not G.has_edge(og_file_name, ele_name):
                 G.add_edge(og_file_name, ele_name, type=ele_type)
 
+            # if element type is class, then load the ast tree
+            if ele_type == 'class':
+                # open the file and parse the ast
+                with open(os.path.join(elements_folder, file), 'r') as source:
+                    try:
+                        tree = ast.parse(source.read())
+                    except IndentationError:
+                        # remove the first four spaces from each line
+                        lines = source.readlines()
+                        lines = [line[4:] for line in lines]
+                        tree = ast.parse(''.join(lines))
+                    # name, start_line, end_line
+                    class_methods = [(node_.name, node_.lineno, node_.end_lineno) for node_ in ast.walk(tree) if isinstance(node_, ast.FunctionDef)]
+                    # for each method, add the node and edge
+                    for method in class_methods:
+                        method_name = method[0]
+                        method_start_line = method[1]
+                        method_end_line = method[2]
+                        # add the method node if it doesn't exist
+                        if not G.has_node(method_name):
+                            G.add_node(method_name, name=method_name, type='method', start_line=method_start_line, end_line=method_end_line)
+                        # if the node exists, check if the edge exists
+                        if not G.has_edge(ele_name, method_name):
+                            G.add_edge(ele_name, method_name, type='class-method')
+        
+        # for each file, read the file and update the graph
+        for file in files:
+
+            filename = file.split('.')[0]
+            eles = filename.split('!!')
+            # TODO: make sure that if the file is a directory, then it is accounted for
+            og_file_name = eles[0].split('@@')[-1]+'.py'
+            ele_type = eles[1]
+            ele_index = eles[2]
+            ele_name = eles[3]
+
             # open the file and parse the ast
             with open(os.path.join(elements_folder, file), 'r') as source:
-                tree = ast.parse(source.read())
+                try:
+                    tree = ast.parse(source.read())
+                except IndentationError:
+                    # remove the first four spaces from each line
+                    lines = source.readlines()
+                    lines = [line[4:] for line in lines]
+                    tree = ast.parse(''.join(lines))
                 for node_ in ast.walk(tree):
                     if isinstance(node_, ast.Call):
                         try:
@@ -104,6 +146,16 @@ def initialize_state(repo_name, update):
                             # if the edge doesn't exist, add it
                             if not G.has_edge(ele_name, node_.func.id):
                                 G.add_edge(ele_name, node_.func.id, type='function-call')
+                        except:
+                            continue
+                    # if the instance is a class instance, then add the edge
+                    if isinstance(node_, ast.Attribute):
+                        try:
+                            if not G.has_node(node_.attr):
+                                continue
+                            # if the edge doesn't exist, add it
+                            if not G.has_edge(ele_name, node_.attr):
+                                G.add_edge(ele_name, node_.attr, type='class-instance')
                         except:
                             continue
 
