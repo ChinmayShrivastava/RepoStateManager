@@ -1,0 +1,1 @@
+{"functions": ["trace_method", "decorator", "wrapper"], "imports": ["asyncio", "functools", "logging"], "import_froms": ["typing", "llama_index.callbacks.base"], "classes": []}

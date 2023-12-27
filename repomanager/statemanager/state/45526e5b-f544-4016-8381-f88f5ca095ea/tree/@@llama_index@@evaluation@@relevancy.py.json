@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["asyncio"], "import_froms": ["__future__", "typing", "llama_index", "llama_index.evaluation.base", "llama_index.indices", "llama_index.prompts", "llama_index.prompts.mixin", "llama_index.schema"], "classes": ["RelevancyEvaluator"]}

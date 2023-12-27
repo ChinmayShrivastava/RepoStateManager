@@ -1,0 +1,1 @@
+{"functions": ["patch_sync", "patched_sync"], "imports": ["asyncio"], "import_froms": ["inspect", "typing", "llama_index.bridge.pydantic", "llama_index.tools.function_tool", "llama_index.tools.types", "llama_index.tools.utils"], "classes": ["BaseToolSpec"]}

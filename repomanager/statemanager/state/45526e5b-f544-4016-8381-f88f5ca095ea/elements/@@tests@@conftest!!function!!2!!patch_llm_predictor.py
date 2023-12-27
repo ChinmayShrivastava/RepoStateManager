@@ -1,0 +1,37 @@
+def patch_llm_predictor(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        LLMPredictor,
+        "predict",
+        patch_llmpredictor_predict,
+    )
+    monkeypatch.setattr(
+        LLMPredictor,
+        "apredict",
+        patch_llmpredictor_apredict,
+    )
+    monkeypatch.setattr(
+        LLMPredictor,
+        "llm",
+        MockLLM(),
+    )
+    monkeypatch.setattr(
+        LLMPredictor,
+        "metadata",
+        LLMMetadata(),
+    )
+
+    monkeypatch.setattr(
+        MockLLM,
+        "predict",
+        patch_llmpredictor_predict,
+    )
+    monkeypatch.setattr(
+        MockLLM,
+        "apredict",
+        patch_llmpredictor_apredict,
+    )
+    monkeypatch.setattr(
+        MockLLM,
+        "metadata",
+        LLMMetadata(),
+    )

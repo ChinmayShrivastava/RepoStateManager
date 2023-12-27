@@ -8,6 +8,8 @@ def parse_tripets(list_of_trilet_strings):
     for trilet_string in list_of_trilet_strings:
         trilet_tuple = parse_trilet(trilet_string)
         list_of_trilet_tuples.append(trilet_tuple)
+    # make sure that the list is unique
+    list_of_trilet_tuples = list(set(list_of_trilet_tuples))
     return list_of_trilet_tuples
 
 def parse_trilet(trilet_string):

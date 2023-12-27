@@ -1,0 +1,1 @@
+{"functions": ["default_sparse_encoder", "relative_score_fusion", "compute_vectors"], "imports": ["torch"], "import_froms": ["typing", "llama_index.vector_stores.types", "transformers"], "classes": ["HybridFusionCallable"]}

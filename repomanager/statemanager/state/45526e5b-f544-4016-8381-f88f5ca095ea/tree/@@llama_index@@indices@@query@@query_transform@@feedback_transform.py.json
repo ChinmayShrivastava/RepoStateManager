@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["logging"], "import_froms": ["typing", "llama_index.evaluation.base", "llama_index.indices.query.query_transform.base", "llama_index.llm_predictor.base", "llama_index.llms.utils", "llama_index.prompts.base", "llama_index.prompts.mixin", "llama_index.schema"], "classes": ["FeedbackQueryTransformation"]}

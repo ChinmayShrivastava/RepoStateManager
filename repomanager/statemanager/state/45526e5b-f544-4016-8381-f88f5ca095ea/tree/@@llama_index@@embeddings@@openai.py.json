@@ -1,0 +1,1 @@
+{"functions": ["get_embedding", "get_embeddings", "get_engine"], "imports": ["httpx"], "import_froms": ["enum", "typing", "openai", "llama_index.bridge.pydantic", "llama_index.callbacks.base", "llama_index.embeddings.base", "llama_index.llms.openai_utils"], "classes": ["OpenAIEmbeddingMode", "OpenAIEmbeddingModelType", "OpenAIEmbeddingModeModel", "OpenAIEmbedding"]}

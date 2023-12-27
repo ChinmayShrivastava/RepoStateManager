@@ -1,0 +1,1 @@
+{"functions": ["fixture_hf_inference_api_embedding"], "imports": ["numpy", "pytest"], "import_froms": ["unittest.mock", "llama_index.embeddings.huggingface", "llama_index.embeddings.pooling", "tests.llms.test_huggingface"], "classes": ["TestHuggingFaceInferenceAPIEmbeddings"]}

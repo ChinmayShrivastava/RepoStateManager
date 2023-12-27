@@ -4,6 +4,8 @@ import sys
 sys.path.append("../")
 from vspace._chromadb import return_collection
 from stringsearch.fuzzy import StringSearch, G
+from retrievers.graph import *
+from retrievers.defaults import *
 
 with open("../state/running_state.json", "r") as f:
     running_state = json.load(f)
@@ -64,26 +66,28 @@ def get_node_information(node_name: str):
 @tool
 def return_info(
     node_name: str,
+    class_name: str = None,
     ):
-    """Takes in one node and returns all relevant connecting information related to it like code, explanation, etc."""
+    """Takes in one node and returns all relevant connecting information related to it like code, explanation, etc. Send the class name if the node is a method."""
     starting_node = stringmatch.search_one(node_name)[0]
 
     snode = G.nodes(data=True)[starting_node]
     snodetype = snode['type']
+    elementname = snode['elementname'] if snodetype in ELEMENTS_THAT_CONTAIN_CODE else None
 
-    if snodetype == 'class':
-        snodetype = 'function'
+    if elementname is None:
+        elementname = G.nodes(data=True)[class_name]['elementname']
 
-    if snodetype != 'function':
-        return f"Sorry, I can only return information on files. This is a {snodetype}. Try again with a file."
+    if snodetype not in CODE_TYPES:
+        return f"Sorry, I can only return information on {','.join(CODE_TYPES)}. This is a {snodetype}. Try again with a file."
 
     to_dispatch = dispatch[snodetype]
 
     if to_dispatch['getCode']:
-        elementname = snode['elementname']
-        # read the state/repo_id/elements/elementname file into _code
-        with open(f"../state/{repo_id}/elements/{elementname}", "r") as f:
-            _code = f.read()
+        # # read the state/repo_id/elements/elementname file into _code
+        # with open(f"../state/{repo_id}/elements/{elementname}", "r") as f:
+        #     _code = f.read()
+        _code = get_code(snode, repo_id, elementname)
 
     # if to_dispatch['getExplanation']:
     #     # get the explanation
@@ -91,10 +95,10 @@ def return_info(
             
     dir_path = elementname.split('!!')[0].replace('@@', '/')+'.py'
 
-    _append = get_node_information(starting_node)
+    # _append = get_node_information(starting_node)
 
     string_to_return = ''
-    string_to_return += _append
+    # string_to_return += _append
     # add the code to it, explaining what it is
     string_to_return += (
         'The following is the code related to the node requested in the network graph found in the file represented by the path:\n'
@@ -106,7 +110,7 @@ def return_info(
 
     return string_to_return
         
-tools = [get_schema, get_node_information, return_info]
+tools = [get_node_information, return_info]
 
 if __name__ == "__main__":
     node = 'get embedding'

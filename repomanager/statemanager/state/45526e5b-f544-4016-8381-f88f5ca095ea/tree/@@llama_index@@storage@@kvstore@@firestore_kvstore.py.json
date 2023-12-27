@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["typing", "llama_index.storage.kvstore.types", "google.cloud", "google.cloud.firestore_v1.services.firestore.transports.base"], "classes": ["FirestoreKVStore"]}

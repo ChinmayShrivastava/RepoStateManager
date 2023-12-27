@@ -1,0 +1,1 @@
+{"functions": ["default_id_func", "build_nodes_from_splits"], "imports": ["logging", "uuid"], "import_froms": ["typing", "llama_index.schema", "llama_index.utils"], "classes": ["IdFuncCallable"]}

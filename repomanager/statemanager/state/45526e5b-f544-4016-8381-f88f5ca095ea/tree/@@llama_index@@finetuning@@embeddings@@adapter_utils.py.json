@@ -1,0 +1,1 @@
+{"functions": ["train_model"], "imports": ["torch", "transformers"], "import_froms": ["pathlib", "typing", "sentence_transformers.util", "torch", "torch.optim", "tqdm.autonotebook", "llama_index.embeddings.adapter_utils", "llama_index.utils"], "classes": ["MyMultipleNegativesRankingLoss"]}

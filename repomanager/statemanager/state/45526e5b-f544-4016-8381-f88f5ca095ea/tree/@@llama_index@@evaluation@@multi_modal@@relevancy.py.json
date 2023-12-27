@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["__future__", "typing", "llama_index.evaluation.base", "llama_index.multi_modal_llms.base", "llama_index.multi_modal_llms.openai", "llama_index.prompts", "llama_index.prompts.mixin", "llama_index.schema"], "classes": ["MultiModalRelevancyEvaluator"]}

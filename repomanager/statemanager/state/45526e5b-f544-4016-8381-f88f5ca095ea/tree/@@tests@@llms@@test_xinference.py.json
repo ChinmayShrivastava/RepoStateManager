@@ -1,0 +1,1 @@
+{"functions": ["mock_chat_stream_iterator", "test_init", "test_chat", "test_stream_chat", "test_complete", "test_stream_complete"], "imports": ["pytest"], "import_froms": ["typing", "llama_index.llms.types", "llama_index.llms.xinference"], "classes": ["MockXinferenceModel", "MockRESTfulClient", "MockXinference"]}

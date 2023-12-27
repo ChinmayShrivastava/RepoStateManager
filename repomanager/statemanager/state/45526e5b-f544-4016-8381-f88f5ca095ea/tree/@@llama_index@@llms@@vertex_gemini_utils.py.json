@@ -1,0 +1,1 @@
+{"functions": ["is_gemini_model", "create_gemini_client", "convert_chat_message_to_gemini_content", "_convert_gemini_part_to_prompt"], "imports": ["base64"], "import_froms": ["typing", "llama_index.llms", "vertexai.preview.generative_models", "vertexai.preview.generative_models", "vertexai.preview.generative_models"], "classes": []}

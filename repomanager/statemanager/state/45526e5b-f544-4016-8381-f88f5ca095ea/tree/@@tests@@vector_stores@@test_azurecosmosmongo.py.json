@@ -1,0 +1,1 @@
+{"functions": ["node_embeddings"], "imports": ["os", "pytest"], "import_froms": ["__future__", "time", "llama_index.schema", "llama_index.vector_stores.azurecosmosmongo", "llama_index.vector_stores.types", "pymongo"], "classes": ["TestAzureMongovCoreVectorSearch"]}

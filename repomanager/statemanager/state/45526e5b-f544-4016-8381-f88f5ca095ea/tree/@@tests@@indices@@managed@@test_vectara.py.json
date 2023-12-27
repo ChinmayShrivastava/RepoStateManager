@@ -1,0 +1,1 @@
+{"functions": ["get_docs", "remove_docs", "test_simple_retrieval", "test_mmr_retrieval", "test_retrieval_with_filter", "test_file_upload"], "imports": ["pytest"], "import_froms": ["typing", "llama_index.indices.managed.vectara.base", "llama_index.schema"], "classes": []}

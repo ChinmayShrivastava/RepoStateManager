@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["logging", "clip", "torch", "torch", "clip"], "import_froms": ["typing", "llama_index.bridge.pydantic", "llama_index.embeddings.base", "llama_index.embeddings.multi_modal_base", "llama_index.schema", "PIL"], "classes": ["ClipEmbedding"]}

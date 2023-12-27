@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["typing", "sqlalchemy", "llama_index.data_structs.table", "llama_index.indices.common.struct_store.base", "llama_index.llm_predictor.base", "llama_index.prompts", "llama_index.utilities.sql_wrapper"], "classes": ["SQLStructDatapointExtractor"]}

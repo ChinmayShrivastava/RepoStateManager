@@ -1,0 +1,1 @@
+{"functions": ["load_extractor"], "imports": [], "import_froms": ["llama_index.extractors.metadata_extractors"], "classes": []}

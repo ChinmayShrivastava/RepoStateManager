@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["dataclasses", "typing", "llama_index.data_structs.data_structs", "llama_index.data_structs.struct_type", "llama_index.schema"], "classes": ["IndexDocumentSummary"]}

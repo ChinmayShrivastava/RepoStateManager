@@ -1,0 +1,1 @@
+{"functions": ["test_prompt_mixin"], "imports": [], "import_froms": ["llama_index.prompts.base", "llama_index.prompts.mixin"], "classes": ["MockObject2", "MockObject1"]}

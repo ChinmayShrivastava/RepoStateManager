@@ -1,0 +1,1 @@
+{"functions": ["arize_phoenix_callback_handler"], "imports": [], "import_froms": ["typing", "llama_index.callbacks.base_handler", "phoenix.trace.exporter", "phoenix.trace.llama_index"], "classes": []}

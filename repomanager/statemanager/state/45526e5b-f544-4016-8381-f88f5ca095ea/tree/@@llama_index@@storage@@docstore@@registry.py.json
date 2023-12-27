@@ -1,0 +1,1 @@
+{"functions": ["get_default_docstore"], "imports": [], "import_froms": ["enum", "typing", "llama_index.storage.docstore.mongo_docstore", "llama_index.storage.docstore.simple_docstore", "llama_index.storage.docstore.types"], "classes": ["DocumentStoreType"]}

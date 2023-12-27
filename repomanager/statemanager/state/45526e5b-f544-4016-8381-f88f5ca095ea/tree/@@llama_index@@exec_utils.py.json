@@ -1,0 +1,1 @@
+{"functions": ["_restricted_import", "_get_restricted_globals", "_verify_source_safety", "safe_eval", "safe_exec"], "imports": ["copy", "re"], "import_froms": ["types", "typing"], "classes": []}

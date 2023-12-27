@@ -26,7 +26,7 @@ import ast
 logging.basicConfig(level=logging.INFO)
 
 repo_map = json.load(open('./repo_map.json'))
-llm = get_llm()
+llm = get_llm(max_tokens=256)
 
 @click.command()
 @click.argument('repo_name')
@@ -95,13 +95,15 @@ def update_elements(repo_name):
             # read the class file, parst it into an ast tree
             _code = open(os.path.join(elements_folder, file)).read()
             codelines = open(os.path.join(elements_folder, file)).read().split('\n')
-            try:
-                asttree = ast.parse(_code)
-            except IndentationError:
-                # remove the first 4 spaces from each line
-                _code = '\n'.join([line[4:] for line in _code.split('\n')])
-                codelines = _code.split('\n')
-                asttree = ast.parse(_code)
+            while True:
+                try:
+                    asttree = ast.parse(_code)
+                    break
+                except IndentationError:
+                    # remove the first 4 spaces from each line
+                    _code = '\n'.join([line[4:] for line in _code.split('\n')])
+                    codelines = _code.split('\n')
+                    continue
             # get the class name
             class_name = [node.name for node in ast.walk(asttree) if isinstance(node, ast.ClassDef)][0]
             # get the class method names, start line and end line

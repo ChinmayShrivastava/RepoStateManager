@@ -1,0 +1,1 @@
+{"functions": ["generate_nodes", "bench_simple_vector_store"], "imports": ["random", "time"], "import_froms": ["typing", "llama_index.schema", "llama_index.vector_stores.simple", "llama_index.vector_stores.types"], "classes": []}

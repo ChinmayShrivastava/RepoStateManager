@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["fsspec"], "import_froms": ["typing", "llama_index.bridge.pydantic", "llama_index.schema", "llama_index.storage.docstore.utils", "llama_index.storage.kvstore", "llama_index.storage.kvstore", "llama_index.storage.kvstore", "llama_index.storage.kvstore", "llama_index.storage.kvstore.types"], "classes": ["IngestionCache", "Config"]}

@@ -1,0 +1,1 @@
+{"functions": ["test_query_engine_falls_back_to_inheriting_retrievers_service_context"], "imports": ["pytest", "anthropic"], "import_froms": ["llama_index", "llama_index.indices.tree.select_leaf_retriever", "llama_index.llms", "llama_index.llms.openai", "llama_index.query_engine.retriever_query_engine"], "classes": []}

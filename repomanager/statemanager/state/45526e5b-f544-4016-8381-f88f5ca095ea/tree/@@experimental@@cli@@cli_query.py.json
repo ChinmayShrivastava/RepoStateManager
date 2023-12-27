@@ -1,0 +1,1 @@
+{"functions": ["query_cli", "register_query_cli"], "imports": [], "import_froms": ["argparse", "configuration"], "classes": []}

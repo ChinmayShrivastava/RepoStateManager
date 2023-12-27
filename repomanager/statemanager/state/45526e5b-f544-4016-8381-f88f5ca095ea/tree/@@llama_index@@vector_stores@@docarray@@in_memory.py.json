@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["fsspec", "docarray"], "import_froms": ["typing", "llama_index.vector_stores.docarray.base", "docarray.index"], "classes": ["DocArrayInMemoryVectorStore"]}

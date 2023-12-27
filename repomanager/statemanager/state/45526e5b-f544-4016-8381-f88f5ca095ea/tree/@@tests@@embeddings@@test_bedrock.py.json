@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["json", "boto3"], "import_froms": ["io", "unittest", "botocore.response", "botocore.stub", "llama_index.embeddings.bedrock"], "classes": ["TestBedrockEmbedding"]}

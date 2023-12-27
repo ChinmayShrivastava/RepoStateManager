@@ -1,0 +1,1 @@
+{"functions": ["firestore_indexstore", "test_firestore_docstore"], "imports": ["pytest"], "import_froms": ["llama_index.data_structs.data_structs", "llama_index.storage.index_store.firestore_indexstore", "llama_index.storage.kvstore.firestore_kvstore", "google.cloud"], "classes": []}

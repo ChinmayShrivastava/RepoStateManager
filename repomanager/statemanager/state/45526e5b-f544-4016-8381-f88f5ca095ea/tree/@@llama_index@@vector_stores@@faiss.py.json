@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["logging", "os", "fsspec", "numpy", "faiss", "faiss", "faiss"], "import_froms": ["typing", "fsspec.implementations.local", "llama_index.schema", "llama_index.vector_stores.simple", "llama_index.vector_stores.types"], "classes": ["FaissVectorStore"]}

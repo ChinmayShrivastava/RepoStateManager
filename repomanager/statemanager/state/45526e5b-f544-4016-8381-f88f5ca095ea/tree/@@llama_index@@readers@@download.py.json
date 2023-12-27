@@ -1,0 +1,1 @@
+{"functions": ["download_loader"], "imports": [], "import_froms": ["typing", "llama_index.download.module", "llama_index.readers.base"], "classes": []}

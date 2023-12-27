@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["typing", "llama_index.bridge.pydantic", "llama_index.callbacks", "llama_index.node_parser.interface", "llama_index.node_parser.node_utils", "llama_index.schema", "langchain.text_splitter", "langchain.text_splitter"], "classes": ["LangchainNodeParser"]}

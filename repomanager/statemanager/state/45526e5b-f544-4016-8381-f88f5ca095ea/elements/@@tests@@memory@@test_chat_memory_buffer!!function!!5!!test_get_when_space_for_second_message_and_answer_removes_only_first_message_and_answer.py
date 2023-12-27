@@ -1,0 +1,27 @@
+def test_get_when_space_for_second_message_and_answer_removes_only_first_message_and_answer() -> (
+    None
+):
+    # Given some initial tokens equal to the token_limit minus one message and one answer
+    token_limit = 5
+    initial_tokens = (
+        token_limit - USER_CHAT_MESSAGE_TOKENS - ASSISTANT_CHAT_MESSAGE_TOKENS
+    )
+
+    # Given two user messages and two assistant answers
+    memory = ChatMemoryBuffer.from_defaults(
+        token_limit=token_limit,
+        chat_history=[
+            USER_CHAT_MESSAGE,
+            ASSISTANT_CHAT_MESSAGE,
+            SECOND_USER_CHAT_MESSAGE,
+            SECOND_ASSISTANT_CHAT_MESSAGE,
+        ],
+    )
+
+    # When I get the chat history from the memory
+    history = memory.get(initial_tokens)
+
+    # Then the history should contain the second message and the second answer
+    assert len(history) == 2
+    assert history[0] == SECOND_USER_CHAT_MESSAGE
+    assert history[1] == SECOND_ASSISTANT_CHAT_MESSAGE

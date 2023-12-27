@@ -1,0 +1,1 @@
+{"functions": ["xinference_message_to_history", "xinference_modelname_to_contextsize"], "imports": [], "import_froms": ["typing", "typing_extensions", "llama_index.llms.types"], "classes": ["ChatCompletionMessage"]}

@@ -1,0 +1,3 @@
+class Tokenizer(Protocol):
+    def encode(self, text: str, *args: Any, **kwargs: Any) -> List[Any]:
+        ...

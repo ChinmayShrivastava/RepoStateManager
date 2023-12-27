@@ -1,0 +1,1 @@
+{"functions": ["kvstore_from_mocked_table", "ddb_index_store", "test_dynamodb_index_store"], "imports": ["pytest", "boto3"], "import_froms": ["typing", "llama_index.data_structs.data_structs", "llama_index.storage.index_store.dynamodb_index_store", "llama_index.storage.kvstore.dynamodb_kvstore", "pytest", "moto"], "classes": []}

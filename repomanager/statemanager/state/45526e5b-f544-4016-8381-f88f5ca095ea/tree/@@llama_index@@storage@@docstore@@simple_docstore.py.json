@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["os", "fsspec"], "import_froms": ["typing", "llama_index.storage.docstore.keyval_docstore", "llama_index.storage.docstore.types", "llama_index.storage.kvstore.simple_kvstore", "llama_index.storage.kvstore.types", "llama_index.utils"], "classes": ["SimpleDocumentStore"]}

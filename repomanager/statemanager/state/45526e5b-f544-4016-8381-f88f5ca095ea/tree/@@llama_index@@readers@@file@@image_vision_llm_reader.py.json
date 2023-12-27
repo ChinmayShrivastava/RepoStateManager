@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["sentencepiece", "torch"], "import_froms": ["pathlib", "typing", "llama_index.readers.base", "llama_index.schema", "llama_index.utils", "PIL", "llama_index.img_utils", "PIL", "transformers"], "classes": ["ImageVisionLLMReader"]}

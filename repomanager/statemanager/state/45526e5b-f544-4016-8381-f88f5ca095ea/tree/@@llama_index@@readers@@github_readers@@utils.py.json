@@ -1,0 +1,1 @@
+{"functions": ["print_if_verbose", "get_file_extension"], "imports": ["asyncio", "os", "time"], "import_froms": ["abc", "typing", "llama_index.readers.github_readers.github_api_client"], "classes": ["BufferedAsyncIterator", "BufferedGitBlobDataIterator"]}

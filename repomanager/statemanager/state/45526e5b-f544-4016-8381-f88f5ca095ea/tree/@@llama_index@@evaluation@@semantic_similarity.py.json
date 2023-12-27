@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["typing", "llama_index.embeddings.base", "llama_index.evaluation.base", "llama_index.prompts.mixin", "llama_index.service_context"], "classes": ["SemanticSimilarityEvaluator"]}

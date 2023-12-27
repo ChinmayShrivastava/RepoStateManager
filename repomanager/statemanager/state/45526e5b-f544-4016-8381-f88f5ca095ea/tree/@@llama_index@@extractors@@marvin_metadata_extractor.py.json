@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["marvin"], "import_froms": ["typing", "llama_index.bridge.pydantic", "llama_index.extractors.interface", "llama_index.schema", "llama_index.utils", "marvin", "marvin", "marvin"], "classes": ["MarvinMetadataExtractor"]}

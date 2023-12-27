@@ -1,0 +1,1 @@
+{"functions": ["_node_embeddings_for_test"], "imports": ["unittest"], "import_froms": ["typing", "llama_index.schema", "llama_index.vector_stores", "llama_index.vector_stores.types"], "classes": ["SimpleVectorStoreTest"]}

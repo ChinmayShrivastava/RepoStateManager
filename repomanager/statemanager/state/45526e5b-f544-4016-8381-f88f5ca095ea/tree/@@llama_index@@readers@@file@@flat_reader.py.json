@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["pathlib", "typing", "llama_index.readers.base", "llama_index.schema"], "classes": ["FlatReader"]}

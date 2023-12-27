@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["logging", "nltk.data"], "import_froms": ["typing", "llama_index.bridge.pydantic", "llama_index.embeddings.base", "llama_index.embeddings.openai", "llama_index.indices.query.embedding_utils", "llama_index.postprocessor.types", "llama_index.schema"], "classes": ["SentenceEmbeddingOptimizer"]}

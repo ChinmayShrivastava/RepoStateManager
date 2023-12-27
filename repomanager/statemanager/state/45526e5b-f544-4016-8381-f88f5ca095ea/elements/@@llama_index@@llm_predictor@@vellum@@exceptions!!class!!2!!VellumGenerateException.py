@@ -1,0 +1,2 @@
+class VellumGenerateException(VellumApiError):
+    pass

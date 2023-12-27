@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["typing", "llama_index.bridge.pydantic", "llama_index.constants", "llama_index.llms.openai", "llama_index.llms.types", "transformers"], "classes": ["OpenAILike"]}

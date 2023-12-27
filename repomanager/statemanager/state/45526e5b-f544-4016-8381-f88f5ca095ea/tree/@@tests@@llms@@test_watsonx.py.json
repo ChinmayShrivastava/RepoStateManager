@@ -1,0 +1,1 @@
+{"functions": ["test_model_basic", "test_model_streaming"], "imports": ["sys", "pytest", "ibm_watson_machine_learning"], "import_froms": ["typing", "unittest.mock", "llama_index.llms.types", "llama_index.llms.watsonx"], "classes": ["MockStreamResponse", "MockIBMModelModule", "Model"]}

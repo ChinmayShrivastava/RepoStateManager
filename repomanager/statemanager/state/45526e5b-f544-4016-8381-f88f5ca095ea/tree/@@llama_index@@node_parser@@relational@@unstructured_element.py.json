@@ -1,0 +1,1 @@
+{"functions": ["html_to_df"], "imports": ["pandas", "lxml", "unstructured"], "import_froms": ["typing", "llama_index.callbacks.base", "llama_index.node_parser.relational.base_element", "llama_index.schema", "lxml", "unstructured.partition.html", "unstructured.documents.html"], "classes": ["UnstructuredElementNodeParser"]}

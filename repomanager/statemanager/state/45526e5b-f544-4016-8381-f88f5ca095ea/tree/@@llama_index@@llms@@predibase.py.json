@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["os"], "import_froms": ["typing", "llama_index.bridge.pydantic", "llama_index.callbacks", "llama_index.constants", "llama_index.llms.base", "llama_index.llms.custom", "llama_index.llms.types", "llama_index.types", "predibase"], "classes": ["PredibaseLLM"]}

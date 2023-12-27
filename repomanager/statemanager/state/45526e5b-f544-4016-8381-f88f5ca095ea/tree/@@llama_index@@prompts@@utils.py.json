@@ -1,0 +1,1 @@
+{"functions": ["get_template_vars", "is_chat_model"], "imports": [], "import_froms": ["string", "typing", "llama_index.llms.base"], "classes": []}

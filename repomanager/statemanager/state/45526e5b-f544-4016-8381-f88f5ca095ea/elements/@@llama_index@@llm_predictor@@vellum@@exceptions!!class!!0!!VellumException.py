@@ -1,0 +1,2 @@
+class VellumException(Exception):
+    pass

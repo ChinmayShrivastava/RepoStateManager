@@ -1,0 +1,1 @@
+{"functions": ["test_predict__basic", "test_stream__basic", "fake_stream"], "imports": ["pytest", "vellum"], "import_froms": ["typing", "unittest", "llama_index.llm_predictor.vellum", "llama_index.prompts"], "classes": []}

@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["pydantic.v1", "pydantic"], "import_froms": ["pydantic.v1", "pydantic.v1.error_wrappers", "pydantic.v1.fields", "pydantic.v1.generics", "pydantic", "pydantic.error_wrappers", "pydantic.fields", "pydantic.generics"], "classes": []}

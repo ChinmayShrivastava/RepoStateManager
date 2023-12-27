@@ -1,0 +1,1 @@
+{"functions": [], "imports": [], "import_froms": ["typing", "llama_index.bridge.pydantic", "llama_index.embeddings.base", "elasticsearch.client", "elasticsearch", "elasticsearch.client"], "classes": ["ElasticsearchEmbedding"]}

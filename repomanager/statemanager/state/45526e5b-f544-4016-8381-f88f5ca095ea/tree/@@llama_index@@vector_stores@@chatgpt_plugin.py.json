@@ -1,0 +1,1 @@
+{"functions": ["convert_docs_to_json"], "imports": ["os", "requests"], "import_froms": ["typing", "requests.adapters", "llama_index.schema", "llama_index.utils", "llama_index.vector_stores.types"], "classes": ["ChatGPTRetrievalPluginClient"]}

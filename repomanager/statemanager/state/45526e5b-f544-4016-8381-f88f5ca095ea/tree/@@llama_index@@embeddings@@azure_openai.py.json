@@ -1,0 +1,1 @@
+{"functions": [], "imports": ["httpx"], "import_froms": ["typing", "openai", "llama_index.bridge.pydantic", "llama_index.callbacks.base", "llama_index.embeddings.base", "llama_index.embeddings.openai", "llama_index.llms.generic_utils", "llama_index.llms.openai_utils"], "classes": ["AzureOpenAIEmbedding"]}

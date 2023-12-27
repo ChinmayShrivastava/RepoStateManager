@@ -1,0 +1,1 @@
+{"functions": ["asyncio_module", "run_async_tasks", "chunks", "get_asyncio_module"], "imports": ["asyncio", "nest_asyncio"], "import_froms": ["itertools", "typing", "tqdm.asyncio", "tqdm.asyncio", "tqdm.asyncio"], "classes": []}
