@@ -3,6 +3,7 @@ import json
 import sys
 sys.path.append("../")
 from vspace._chromadb import return_collection
+from vspace.vsearch import VectorSearch
 from stringsearch.fuzzy import StringSearch, G
 from retrievers.graph import *
 from retrievers.defaults import *
@@ -23,6 +24,8 @@ code = return_collection(path=path_, collection_name="code")
 code.count()
 
 stringmatch = StringSearch()
+
+vectorsearch = VectorSearch()
 
 @tool
 def get_schema():
@@ -139,6 +142,13 @@ def return_info(
         string_to_return = f"Sorry, I couldn't find any information on {node_name}. Something went wrong."
 
     return string_to_return
+
+@tool
+def semantic_node_finder(
+    query: str, 
+    type: str = None) -> str:
+    """Takes in a query and returns the top 5 nodes that match the query and the type of the node, if requested"""
+    pass
         
 tools = [get_node_information, return_info]
 
