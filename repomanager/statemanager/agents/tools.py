@@ -26,7 +26,7 @@ stringmatch = StringSearch()
 
 @tool
 def get_schema():
-    """Returns the schema of network graph"""
+    """Returns the schema of network graph describing the edge types and the nodes they connect."""
     # open the state/repoid/meta/schema.json
     with open(f"../state/{repo_id}/meta/schema.json", "r") as f:
         schema = json.load(f)
@@ -62,6 +62,32 @@ def get_node_information(node_name: str):
                 edge1 = edge[1]
             string_to_return += f"({edge0}, {edge[2]['type']}, {edge1})\n"
     return string_to_return + '-------------------\n'
+
+@tool
+def get_edge_information(edge_name: str):
+    """takes in an edge name from the schema of the graph and returns the connected nodes"""
+    #edge_name = stringmatch.search_one(edge_name)[0]
+    string_to_return = ''
+    string_to_return += (
+        'The following are the triplets related to the edge found in the network graph:\n'
+        f"Edge name: {edge_name}\n"
+        '-------------------\n'
+    )
+    for edge in G.edges(data=True):
+        if edge_name == edge[2]['type']:
+            edge0 = edge[0].split('_')
+            if edge0[-1].isdigit():
+                edge0 = '_'.join(edge0[:-1])
+            else:
+                edge0 = edge[0]
+            edge1 = edge[1].split('_')
+            if edge1[-1].isdigit():
+                edge1 = '_'.join(edge1[:-1])
+            else:
+                edge1 = edge[1]
+            string_to_return += f"({edge0}, {edge[2]['type']}, {edge1})\n"
+    return string_to_return + '-------------------\n'
+
 
 @tool
 def return_info(
@@ -110,7 +136,7 @@ def return_info(
 
     return string_to_return
         
-tools = [get_node_information, return_info]
+tools = [get_node_information, return_info, get_schema, get_edge_information]
 
 if __name__ == "__main__":
     node = 'get embedding'
