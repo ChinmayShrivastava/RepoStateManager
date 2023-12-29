@@ -32,7 +32,7 @@ def clone_repo(repo_url, repo_name):
 
     # Save the dictionary into a JSON file
     with open('repo_map.json', 'w') as f:
-        json.dump(repo_map, f)
+        json.dump(repo_map, f, indent=4)
 
     click.echo(click.style(f'Repository {repo_name} cloned successfully with ID {repo_id}.', fg='green'))
 
