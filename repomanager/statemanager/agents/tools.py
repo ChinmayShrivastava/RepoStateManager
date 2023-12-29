@@ -136,7 +136,7 @@ def return_info(
 
     return string_to_return
         
-tools = [get_node_information, return_info, get_schema, get_edge_information]
+tools = [get_node_information, return_info]
 
 if __name__ == "__main__":
     node = 'get embedding'
