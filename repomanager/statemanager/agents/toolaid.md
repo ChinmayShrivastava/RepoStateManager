@@ -13,4 +13,5 @@
 
 ## Here is a higl level view of the potential (some are already coded and available) tools
 
-1. The schema tool - takes in a node type or a node name (basically some identifier for the node), and returns the meta schema information on the types of edges that it has (incoming and outgoing)
+1. The schema tool - takes in a node type or a node name (basically some identifier for the node), and returns the meta schema information on the types of edges that it has (incoming and outgoing).
+2. 
