@@ -57,7 +57,7 @@ def chat_history(chat=None, usermessage=None, airesponse=None):
 class LangchainAgent():
 
     def __init__(self, description, verbose=True) -> None:
-        self.llm = get_langchain_llm()
+        self.llm = get_langchain_llm(model='gpt-3.5-turbo-instruct')
         self.tools = []
         self.llm_with_tools = add_tools(self.llm, self.tools)
         self.prompt_template = get_prompt_template(description)

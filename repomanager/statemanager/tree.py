@@ -24,13 +24,16 @@ def extract_elements_from_python_file(repo_name):
             continue
 
         filepath = os.path.join('data/flattened', repo_id, 'files/', filename)
-        with open(filepath, 'r') as f:
-            # read the code
-            code = f.read()
-            # take the cursor to the beginning of the file
-            f.seek(0)
-            # read the lines of the file
-            codelines = f.readlines()
+        try:
+            with open(filepath, 'r') as f:
+                # read the code
+                code = f.read()
+                # take the cursor to the beginning of the file
+                f.seek(0)
+                # read the lines of the file
+                codelines = f.readlines()
+        except:
+            continue
 
         tree = ast.parse(code)
     

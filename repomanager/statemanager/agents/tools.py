@@ -69,44 +69,48 @@ def return_info(
     class_name: str = None,
     ):
     """Takes in one node and returns all relevant connecting information related to it like code, explanation, etc. Send the class name if the node is a method."""
-    starting_node = stringmatch.search_one(node_name)[0]
+    try:
+        starting_node = stringmatch.search_one(node_name)[0]
 
-    snode = G.nodes(data=True)[starting_node]
-    snodetype = snode['type']
-    elementname = snode['elementname'] if snodetype in ELEMENTS_THAT_CONTAIN_CODE else None
+        snode = G.nodes(data=True)[starting_node]
+        snodetype = snode['type']
+        elementname = snode['elementname'] if snodetype in ELEMENTS_THAT_CONTAIN_CODE else None
 
-    if elementname is None:
-        elementname = G.nodes(data=True)[class_name]['elementname']
+        if elementname is None:
+            elementname = G.nodes(data=True)[class_name]['elementname']
 
-    if snodetype not in CODE_TYPES:
-        return f"Sorry, I can only return information on {','.join(CODE_TYPES)}. This is a {snodetype}. Try again with a file."
+        if snodetype not in CODE_TYPES:
+            return f"Sorry, I can only return information on {','.join(CODE_TYPES)}. This is a {snodetype}. Try again with a file."
 
-    to_dispatch = dispatch[snodetype]
+        to_dispatch = dispatch[snodetype]
 
-    if to_dispatch['getCode']:
-        # # read the state/repo_id/elements/elementname file into _code
-        # with open(f"../state/{repo_id}/elements/{elementname}", "r") as f:
-        #     _code = f.read()
-        _code = get_code(snode, repo_id, elementname)
+        if to_dispatch['getCode']:
+            # # read the state/repo_id/elements/elementname file into _code
+            # with open(f"../state/{repo_id}/elements/{elementname}", "r") as f:
+            #     _code = f.read()
+            _code = get_code(snode, repo_id, elementname)
 
-    # if to_dispatch['getExplanation']:
-    #     # get the explanation
-    #     explanation = snode['explanation']
-            
-    dir_path = elementname.split('!!')[0].replace('@@', '/')+'.py'
+        # if to_dispatch['getExplanation']:
+        #     # get the explanation
+        #     explanation = snode['explanation']
+                
+        dir_path = elementname.split('!!')[0].replace('@@', '/')+'.py'
 
-    # _append = get_node_information(starting_node)
+        # _append = get_node_information(starting_node)
 
-    string_to_return = ''
-    # string_to_return += _append
-    # add the code to it, explaining what it is
-    string_to_return += (
-        'The following is the code related to the node requested in the network graph found in the file represented by the path:\n'
-        'Path: ' + dir_path + '\n'
-        '-------------------\n'
-    )
-    string_to_return += f"{_code}\n"
-    string_to_return += '-------------------\n'
+        string_to_return = ''
+        # string_to_return += _append
+        # add the code to it, explaining what it is
+        string_to_return += (
+            'The following is the code related to the node requested in the network graph found in the file represented by the path:\n'
+            'Path: ' + dir_path + '\n'
+            '-------------------\n'
+        )
+        string_to_return += f"{_code}\n"
+        string_to_return += '-------------------\n'
+    except Exception as e:
+        print(e)
+        string_to_return = f"Sorry, I couldn't find any information on {node_name}. Something went wrong."
 
     return string_to_return
         
