@@ -3,6 +3,13 @@ from chromadb import PersistentClient, HttpClient
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 load_dotenv()
+from langchain.embeddings import OpenAIEmbeddings
+
+_embeddings_model = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
+
+def get_embeddings(listoftexts):
+    embeddings = _embeddings_model.embed_documents(listoftexts)
+    return embeddings
 
 # TODO: make sure the collection names are unique per repo
 def return_collection(path=None, collection_name=None):
@@ -14,4 +21,13 @@ def return_collection(path=None, collection_name=None):
         model_name="text-embedding-ada-002"
     )
     collection = chroma_client.get_or_create_collection(name=collection_name, embedding_function=emb_fn, metadata={"hnsw:space": "cosine"})
+    return collection
+
+def add_docs_to_collection(docs, metadata, ids, collection):
+    collection.add(
+        documents=docs,
+        embeddings=get_embeddings(docs),
+        metadatas=metadata,
+        ids=ids
+    )
     return collection

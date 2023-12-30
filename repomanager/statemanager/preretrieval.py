@@ -6,15 +6,8 @@ import logging
 from llms.completion import get_llm
 from prompts.general import PROMPT_TO_GENERATE_SCHEMA # format the triplets
 import random
-from vspace._chromadb import return_collection
+from vspace._chromadb import return_collection, get_embeddings
 from standard.extract import get_imports_and_g_variables
-from langchain.embeddings import OpenAIEmbeddings
-
-_embeddings_model = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
-
-def get_embeddings(listoftexts):
-    embeddings = _embeddings_model.embed_documents(listoftexts)
-    return embeddings
 
 # create meta for the edge types - schema
 # create the vector spaces for different things, code, paths (more like a string search for path), explanations, triplets, etc.

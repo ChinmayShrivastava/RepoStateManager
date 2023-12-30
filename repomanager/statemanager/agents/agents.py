@@ -20,7 +20,7 @@ def get_prompt_template(description):
         [
             (
                 "system",
-                "You are very powerful assistant, but bad at calculating lengths of words.",
+                description,
             ),
             MessagesPlaceholder(variable_name=MEMORY_KEY),
             ("user", "{input}"),
@@ -29,7 +29,7 @@ def get_prompt_template(description):
     )
 
 def get_agent(llm_with_tools, prompt_template):
-    return (
+    agent = (
         {
             "input": lambda x: x["input"],
             "agent_scratchpad": lambda x: format_to_openai_function_messages(
@@ -41,6 +41,7 @@ def get_agent(llm_with_tools, prompt_template):
         | llm_with_tools
         | OpenAIFunctionsAgentOutputParser()
     )
+    return agent
 
 def get_agent_executor(agent, tools, verbose=True):
     return AgentExecutor(agent=agent, tools=tools, verbose=verbose)
@@ -57,7 +58,7 @@ def chat_history(chat=None, usermessage=None, airesponse=None):
 class LangchainAgent():
 
     def __init__(self, description, verbose=True) -> None:
-        self.llm = get_langchain_llm(model='gpt-3.5-turbo-instruct')
+        self.llm = get_langchain_llm(model='gpt-4')
         self.tools = []
         self.llm_with_tools = add_tools(self.llm, self.tools)
         self.prompt_template = get_prompt_template(description)

@@ -77,5 +77,6 @@
     "_create_collection": "(entity, action, action description)",
     "\"apredict\"": "(patch_llmpredictor_apredict_0, apredict, apredict)",
     "Method Goes Here: with_retriever": "(VectaraQueryEngine, EXTERNAL_DEPENDENCY, Method Goes Here: with_retriever)",
-    "generate_query": "(None_149, generate_query, a function that the KnowledgeGraphQueryEngine contains)"
+    "generate_query": "(None_149, generate_query, a function that the KnowledgeGraphQueryEngine contains)",
+    "parent_class": "(class name, parent_class, parent class name)"
 }

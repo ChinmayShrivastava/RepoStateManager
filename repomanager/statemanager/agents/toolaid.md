@@ -13,8 +13,13 @@
 
 ## Here is a high level view of the potential (some are already coded and available) tools
 
-1. `The schema tool` - takes in a node type or a node name (basically some identifier for the node), and returns the meta schema information on the types of edges that it has (incoming and outgoing).
+1. `The schema tool` - takes in a node type or a node name (basically some identifier for the node), and returns the meta schema information on the types of edges that it has (incoming and outgoing). ---> NEED TO CHANGE, DOESN'T WORK
 2. `The node tool` - takes in a unique node identifier (name), and some relevant context, based on which it runs very specific pipelines to retrieve information related to the code which it then returns.
 3. `The human to tech breaker` - an agent/completion that takes in the human query and breaks it into sub-queries to retreive information on each independently and then (maybe) extracts insights from it to pass it into the final prompt.
-4. `The semantic response finder` - for very vague queries, not specifying any relevant node name, this tool will run vector search to find the relevant node.
+4. `The semantic response finder` - for very vague queries, not specifying any relevant node name, this tool will run vector search to find the relevant node. ---> DONE
 5. 
+
+NOTES:
+
+TODO: Give more weight to the class nodes, in the fuzzy search.
+TODO: Make sure fault tolerances are built in. When a wrong function is called, it reverts back to a good one.

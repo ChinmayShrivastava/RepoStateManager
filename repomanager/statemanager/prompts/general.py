@@ -97,3 +97,36 @@ Use the examples to output the schema for the input information
 Triplets:
 {triplets}
 Schema:"""
+
+HUMAN_TO_TECH_SUB_QUERY = (
+    "Convert the query into sub-queries that will be used to retreive relevant information from a graphstore and a vector store.\n"
+    "Also, specify what store to use for each sub-query.\n"
+    "Example:\n"
+    "---------------\n"
+    "Query:\n"
+    "{ex1}\n"
+    "Sub-queries:\n"
+    "{r1}\n"
+    "---------------\n"
+    "Query:\n"
+    "{ex2}\n"
+    "Sub-queries:\n"
+    "{r2}\n"
+    "---------------\n"
+    "Below is the query you need to convert:\n"
+    "Query:\n"
+    "{query}\n"
+    "Sub-queries:\n"
+)
+
+GRAPH_AGENT_DESCRIPTION_TEMPLATE = (
+    "You are a graph navigator.\n"
+    "Your goal is to navigate the graph through predecessors and successors to collect information.\n"
+    "The information should be sufficient to answer the query:\n"
+    "Query:\n"
+    "{query}\n"
+    "----------------------------------------\n"
+    "Use and reuse the tools to navigate the graph.\n"
+    "Return \"Success\" when you have collected sufficient information to answer the query.\n"
+    "Do not answer anything else.\n"
+)
