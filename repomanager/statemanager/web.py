@@ -78,5 +78,8 @@ def spread_web(repo_name):
 
         json.dump(default_tracker, open(f'state/{repo_id}/meta/defaults/connections.json', 'w'))
 
+    if not default_tracker["async_methods"]:
+        pass
+
 if __name__ == '__main__':
     spread_web()

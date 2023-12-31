@@ -13,9 +13,10 @@ if __name__ == "__main__":
         llm=OpenAI('gpt-4'),
     )
     last_tuple = None
-    # while True:
-    r = func_agent.chat("""Hello everyone! I have a question about the OpenAIPromptExecutionSettings ToolCallBehaviour.AutoInvokeKernelFunctions.
-
-I understand how to use it, and witness that it can create automatically a plan on its own to generate in a certain order the functions that are inside the plugins registered into the Kernel. However I don't understand how it works under the hood. Does it use SK planner ? Is this embedded inside OpenAI ChatGPT ?""",
-                        chat_history=func_agent.chat_history)
+    r = func_agent.chat("""What does the query method under basequeryengine do?""",
+    chat_history=func_agent.chat_history)
     print(r)
+    while True:
+        _input = input("Enter a query: ")
+        r = func_agent.chat(_input, chat_history=func_agent.chat_history)
+        print(r)

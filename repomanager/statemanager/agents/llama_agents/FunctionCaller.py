@@ -11,9 +11,11 @@ from llama_index.llms.base import ChatMessage
 from typing import Any, List, Optional, Type
 
 AGENT_DESCRIPTION = (
-    "As a function caller, you have access to functions that can help access a code library named 'semantic kernel'."
+    "As a function caller, you have access to functions that can help access a code library named 'llama index'."
     "For the user query, call the functions for the relevant information, and answer the query."
     "Collect sufficient information before answering the query."
+    "If one tool doesn't give you the information you need, try another tool."
+    "Always make sure that you have the right information before answering the query."
 )
 
 class FunctionManager(OpenAIAgent):
