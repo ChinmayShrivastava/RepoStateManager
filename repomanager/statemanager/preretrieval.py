@@ -115,6 +115,10 @@ def retrieval_preprocess(repo_name):
 
         code_snippet = global_vars_imports + '\n' + code_snippet
 
+        # TODO: for the sake of it, currently we are removing duplicate files. But For production make sure that all the code is being included, none is being disincluded.
+        if og_file_name+ele_name in ids:
+            continue
+
         code.append(code_snippet)
         metadata.append({
             'name': ele_name,

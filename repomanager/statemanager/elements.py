@@ -4,7 +4,7 @@ import json
 import pickle
 import logging
 from prompts.general import PROMPT_TO_EXPLAIN_CODE, PROMPT_TO_EXTRACT_INFO_FROM_CODE
-from standard.extract import element_file_iterator, get_code, get_classname_classmethods
+from standard.extract import element_file_iterator, get_element_code, get_classname_classmethods
 from error.graph import check_graph_elements
 from llms.completion import get_llm, check_and_generate_explanation
 import datetime
@@ -50,7 +50,7 @@ def update_elements(repo_name):
 
     for file in temp_dict.keys():
 
-        code_snippet, codelines, asttree = get_code(file, elements_folder)
+        code_snippet, codelines, asttree = get_element_code(file, elements_folder)
 
         if temp_dict[file]['type'] != 'class':
             click.echo(f'Updating {temp_dict[file]["name"]} of type {temp_dict[file]["type"]}')

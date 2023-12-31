@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from langchain.embeddings import OpenAIEmbeddings
 
-_embeddings_model = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'])
+_embeddings_model = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'], disallowed_special=())
 
 def get_embeddings(listoftexts):
     embeddings = _embeddings_model.embed_documents(listoftexts)
