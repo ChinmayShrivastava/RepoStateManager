@@ -7,7 +7,7 @@ from langchain.embeddings import OpenAIEmbeddings
 
 _embeddings_model = OpenAIEmbeddings(openai_api_key=os.environ['OPENAI_API_KEY'], disallowed_special=())
 
-def get_embeddings(listoftexts):
+def get_embeddings(listoftexts) -> list:
     embeddings = _embeddings_model.embed_documents(listoftexts)
     return embeddings
 

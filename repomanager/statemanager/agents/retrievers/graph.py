@@ -14,13 +14,14 @@ def get_function_code(name, code):
 def get_class_breakdown(code):
     # read the class file, parst it into an ast tree
     codelines = code.split('\n')
-    try:
-        asttree = ast.parse(code)
-    except IndentationError:
-        # remove the first 4 spaces from each line
-        code = '\n'.join([line[4:] for line in code.split('\n')])
-        codelines = code.split('\n')
-        asttree = ast.parse(code)
+    while True:
+        try:
+            asttree = ast.parse(code)
+            break
+        except IndentationError:
+            # remove the first 4 spaces from each line
+            code = '\n'.join([line[4:] for line in code.split('\n')])
+            codelines = code.split('\n')
     # get the class name
     class_name = [node.name for node in ast.walk(asttree) if isinstance(node, ast.ClassDef)][0]
     # get the class method names, start line and end line

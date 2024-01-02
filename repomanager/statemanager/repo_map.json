@@ -3,5 +3,6 @@
     "rb": "e74061cb-5ab0-470f-9673-7333759fda02",
     "superagent-py": "ace3bad2-fbfc-4092-b4ba-df5555ad6cd4",
     "llama_index": "45526e5b-f544-4016-8381-f88f5ca095ea",
-    "semantic-kernel": "8be9bce0-afe1-4ee2-a838-d11a28252849"
+    "semantic-kernel": "8be9bce0-afe1-4ee2-a838-d11a28252849",
+    "repoman": "f2b65a27-1268-496b-87f5-712991c28e52"
 }

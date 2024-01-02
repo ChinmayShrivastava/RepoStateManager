@@ -2,16 +2,20 @@ import sys
 sys.path.append("../")
 sys.path.append("../../")
 from vspace._chromadb import return_collection
-from vspace.vsearch import VectorSearch
+from vspace.vsearch import PineconeVectorSearch
 from stringsearch.fuzzy import G, StringSearch
 from retrievers.graph import *
 from retrievers.defaults import *
 import json
 from llama_index.tools import FunctionTool
 from graph.retrieve import traverse_and_collect
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 with open("../state/running_state.json", "r") as f:
     running_state = json.load(f)
+repo_name = running_state["repo_name"]
 repo_id = running_state["repo_id"]
 
 with open(f"../state/{repo_id}/meta/dispatch.json", "r") as f:
@@ -31,8 +35,14 @@ code.count()
 
 stringmatch = StringSearch()
 
-vectorsearch_expl = VectorSearch(collection_name="explanations")
-vectorsearch_code = VectorSearch(collection_name="code")
+vectorsearch_expl = PineconeVectorSearch(
+    index_name=os.environ['INDEX_NAME'],
+    collection_name=f"{repo_name}-explanations"
+    )
+vectorsearch_code = PineconeVectorSearch(
+    index_name=os.environ['INDEX_NAME'],
+    collection_name=f"{repo_name}-code"
+    )
 
 def get_node_edges(node_name: str, node_type: str = None):
     """Takes in a node name and an optional node_type (class, class-method, function) in the graph and returns the network graph triplets associated with it"""

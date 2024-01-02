@@ -8,5 +8,6 @@ run these in order
 6. elements
 7. web
 8. preretrieval
+9. migrate
 
 // dispatch was currently written manually, automate it.
