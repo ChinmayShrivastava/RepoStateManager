@@ -6,11 +6,17 @@ import time
 from agents.retrievers.graph import get_code
 from agents.retrievers.defaults import ELEMENTS_THAT_CONTAIN_CODE
 import logging
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 
 # start the driver
-driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "neo4j"))
+driver = GraphDatabase.driver(  
+    uri=f"{os.getenv('NEO4J_URL')}",
+    auth=(os.getenv('NEO4J_ADMIN'), os.getenv('NEO4J_PASSWORD_DROPLET')),
+    )
 
 # KNOWN_EDGE_TYPES = [
 #     "dir-to-file", 
@@ -109,31 +115,31 @@ def migrate(repo_name, repo_id, G):
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
 
-    nodes = list(chunks(nodes, 1000))
+    nodes = list(chunks(nodes, 8000))
 
-    threads = []
-    for i in range(len(nodes)):
-        t = threading.Thread(target=migrate_nodes, args=(nodes[i],))
-        threads.append(t)
-        t.start()
-        time.sleep(0.1)
-    for t in threads:
-        t.join()
+    # threads = []
+    # for i in range(len(nodes)):
+    #     t = threading.Thread(target=migrate_nodes, args=(nodes[i],))
+    #     threads.append(t)
+    #     t.start()
+    #     time.sleep(0.1)
+    # for t in threads:
+    #     t.join()
             
-    # wait for the threads to finish
+    # # wait for the threads to finish
             
-    edges = [edge for edge in G.edges(data=True)]
+    # edges = [edge for edge in G.edges(data=True)]
 
-    edges = list(chunks(edges, 10000))
+    # edges = list(chunks(edges, 20000))
 
-    threads = []
-    for i in range(len(edges)):
-        t = threading.Thread(target=migrate_edges, args=(edges[i],))
-        threads.append(t)
-        t.start()
-        time.sleep(0.1)
-    for t in threads:
-        t.join()
+    # threads = []
+    # for i in range(len(edges)):
+    #     t = threading.Thread(target=migrate_edges, args=(edges[i],))
+    #     threads.append(t)
+    #     t.start()
+    #     time.sleep(0.1)
+    # for t in threads:
+    #     t.join()
 
     # wait for the threads to finish
             
@@ -155,6 +161,7 @@ def add_code(nodes, repo_id):
             continue
         if node[1]['type'] not in ELEMENTS_THAT_CONTAIN_CODE:
             continue
+        print(node)
         # add code if it exists
         type = node[1]['type']
         if type in ELEMENTS_THAT_CONTAIN_CODE:
@@ -197,3 +204,13 @@ def migrate_edges(edges):
 
         with driver.session() as session:
             session.run(query)
+
+def test_connection():
+    with driver.session() as session:
+        # print the total number of nodes and the total number of edges
+        result = session.run("MATCH (n) RETURN count(n)")
+        for record in result:
+            print(record)
+
+if __name__ == '__main__':
+    test_connection()

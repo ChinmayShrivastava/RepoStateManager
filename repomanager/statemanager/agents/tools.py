@@ -27,7 +27,7 @@ triplets.count()
 code = return_collection(path=path_, collection_name="code")
 code.count()
 
-stringmatch = StringSearch()
+stringmatch = StringSearch.init_from_networkx(G)
 
 vectorsearch = VectorSearch(collection_name="explanations")
 

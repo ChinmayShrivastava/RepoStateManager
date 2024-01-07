@@ -1,10 +1,15 @@
 import ast
+from .defaults import ELEMENTS_THAT_CONTAIN_CODE
 
 def get_code(nx_node, repo_id, elementname):
     """Takes in one node fron networkx and returns the code associated with it."""
+    if 'elementname' not in nx_node or 'type' not in nx_node:
+        return ''
+    if nx_node['type'] not in ELEMENTS_THAT_CONTAIN_CODE:
+        return ''
     type_ = nx_node['type']
     name = nx_node['name']
-    with open(f"../state/{repo_id}/elements/{elementname}", "r") as f:
+    with open(f"state/{repo_id}/elements/{elementname}", "r") as f:
         _code = f.read()
     return function_dispatch_type['get_code'][type_](name, _code)
 
@@ -18,7 +23,7 @@ def get_class_breakdown(code):
         try:
             asttree = ast.parse(code)
             break
-        except IndentationError:
+        except:
             # remove the first 4 spaces from each line
             code = '\n'.join([line[4:] for line in code.split('\n')])
             codelines = code.split('\n')

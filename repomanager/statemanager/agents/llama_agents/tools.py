@@ -9,9 +9,13 @@ from retrievers.defaults import *
 import json
 from llama_index.tools import FunctionTool
 from graph.retrieve import traverse_and_collect
+from graph._graph import NetworkXGraph, Neo4JGraph
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 with open("../state/running_state.json", "r") as f:
     running_state = json.load(f)
@@ -33,7 +37,7 @@ triplets.count()
 code = return_collection(path=path_, collection_name="code")
 code.count()
 
-stringmatch = StringSearch()
+stringmatch = StringSearch.init_from_networkx(G)
 
 vectorsearch_expl = PineconeVectorSearch(
     index_name=os.environ['INDEX_NAME'],
@@ -43,6 +47,16 @@ vectorsearch_code = PineconeVectorSearch(
     index_name=os.environ['INDEX_NAME'],
     collection_name=f"{repo_name}-code"
     )
+
+# graph_nx = NetworkXGraph.from_G(
+#     repo_id=repo_id,
+#     G=G
+# )
+
+graph_nx = Neo4JGraph.from_url(
+    url=f"{os.getenv('NEO4J_URL')}",
+    auth=(os.getenv('NEO4J_ADMIN'), os.getenv('NEO4J_PASSWORD_DROPLET')),
+)
 
 def get_node_edges(node_name: str, node_type: str = None):
     """Takes in a node name and an optional node_type (class, class-method, function) in the graph and returns the network graph triplets associated with it"""
@@ -57,7 +71,13 @@ def get_node_edges(node_name: str, node_type: str = None):
         f"Node name: {node_name}\n"
         '-------------------\n'
     )
-    _triplets = traverse_and_collect(G, node_name, node_type)
+    # _triplets = traverse_and_collect(graph_nx, node_name, node_type)
+    _triplets = graph_nx.get_edges_by_type(
+        {
+            'name': node_name,
+            'type': node_type,
+        }
+    )
     # _triplets are of type ReturnedEdges, where each edge is of type ReturnedEdge, where each edge has a start_node, end_node, and metadata
     edges = [(edge.start_node, edge.end_node, edge.metadata) for edge in _triplets.edges]
     for edge in edges:
@@ -104,16 +124,18 @@ def return_info(
     """Takes in node_name and returns code associated with it. Class name is required if the node is a method."""
     # try:
     starting_node = stringmatch.search_one(node_name)[0]
+    if class_name is not None and len(class_name)==0:
+        class_name = None
     if class_name is not None:
         starting_node = stringmatch.search_one(node_name, 'class-method')[0]
         class_name = stringmatch.search_one(class_name)[0]
 
-    snode = G.nodes(data=True)[starting_node]
+    snode = graph_nx.get_node_metadata(starting_node)
     snodetype = snode['type']
     elementname = snode['elementname'] if snodetype in ELEMENTS_THAT_CONTAIN_CODE else None
 
     if elementname is None:
-        elementname = G.nodes(data=True)[class_name]['elementname']
+        elementname = graph_nx.get_node_metadata(class_name)['elementname']
 
     if snodetype not in CODE_TYPES:
         return f"Sorry, I can only return information on {','.join(CODE_TYPES)}. This is a {snodetype}. Try again with a file."
@@ -124,7 +146,7 @@ def return_info(
         # # read the state/repo_id/elements/elementname file into _code
         # with open(f"../state/{repo_id}/elements/{elementname}", "r") as f:
         #     _code = f.read()
-        _code = get_code(snode, repo_id, elementname)
+        _code = graph_nx.get_code(snode, elementname)
 
     # if to_dispatch['getExplanation']:
     #     # get the explanation

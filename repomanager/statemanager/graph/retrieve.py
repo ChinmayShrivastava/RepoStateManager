@@ -1,13 +1,6 @@
 from defaults.graph import parsed_info
 from pydantic import BaseModel
-
-class ReturnedEdge(BaseModel):
-    start_node: str
-    end_node: str
-    metadata: dict
-
-class ReturnedEdges(BaseModel):
-    edges: list[ReturnedEdge]
+from graph.type import ReturnedEdge, ReturnedEdges
 
 def traverse_and_collect(G, node, type) -> ReturnedEdges:
     """Traverses the graph and returns the edges associated with the node"""
@@ -22,10 +15,12 @@ def traverse_and_collect(G, node, type) -> ReturnedEdges:
         edges.extend(collect_info_from_all_edges(G, node))
     return ReturnedEdges(edges=edges)
 
-def collect_info_from_all_edges(G, node) -> list[ReturnedEdge]:
+def collect_info_from_all_edges(G, node) -> ReturnedEdges:
     """Collects all the edges from the node"""
     edges = []
-    for edge in G.edges(node, data=True):
+    for edge in G.get_adjacent_edges(node):
+        if 'type' not in edge[2]:
+            continue
         edges.append(ReturnedEdge(start_node=edge[0], end_node=edge[1], metadata=edge[2]))
     return edges
 
@@ -35,7 +30,7 @@ def collect_info_from_class(G, node, depth=0) -> list[ReturnedEdge]:
         return []
     edges = []
     # add the edges from class to class-method
-    for edge in G.edges(node, data=True):
+    for edge in G.get_adjacent_edges(node):
         if 'type' not in edge[2]:
             continue
         if edge[2]['type']=="class-method":
