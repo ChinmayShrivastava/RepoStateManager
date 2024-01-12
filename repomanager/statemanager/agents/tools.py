@@ -151,7 +151,9 @@ def return_info(
 def semantic_node_finder(
         query: str, 
         type: str = None) -> str:
-    """Takes in a human language query and returns the top 5 nodes that match the query and the optional type of the node, if requested"""
+    """Takes in a 3-5 word human language query and returns the top 5 nodes that match the query and the optional type of the node, if requested"""
+    if len(query.split(' ')) > 5:
+        return "Please enter a query with 3-5 words."
     results = vectorsearch.search(query=query, type=type)
     string_to_return = (
         'Find the top five nodes that match the query:\n'

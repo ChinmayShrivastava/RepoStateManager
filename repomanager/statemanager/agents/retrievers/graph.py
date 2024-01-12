@@ -1,5 +1,6 @@
 import ast
 from .defaults import ELEMENTS_THAT_CONTAIN_CODE
+# add the path to the sys 
 
 def get_code(nx_node, repo_id, elementname):
     """Takes in one node fron networkx and returns the code associated with it."""
@@ -9,7 +10,7 @@ def get_code(nx_node, repo_id, elementname):
         return ''
     type_ = nx_node['type']
     name = nx_node['name']
-    with open(f"state/{repo_id}/elements/{elementname}", "r") as f:
+    with open(f"statemanager/state/{repo_id}/elements/{elementname}", "r") as f:
         _code = f.read()
     return function_dispatch_type['get_code'][type_](name, _code)
 

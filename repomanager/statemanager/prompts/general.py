@@ -130,3 +130,37 @@ GRAPH_AGENT_DESCRIPTION_TEMPLATE = (
     "Return \"Success\" when you have collected sufficient information to answer the query.\n"
     "Do not answer anything else.\n"
 )
+
+PROMPT_TO_EXTRACT_INFO_FROM_DOCS = """Attached you will find a snippet from documentationof a code base. Extract insights from the chunk to easily search for it later.
+Return the extracted info as triplets for updating a graph. E.g. (subject, predicate, object)
+Prefer the available predicates, add a new one if required
+------------
+Available predicates:
+- USE_CASE
+- INSIGHT
+------------
+Example1:
+Snippet:
+Documents
+from llama_index import Document, VectorStoreIndex
+
+text_list = [text1, text2, ...]
+documents = [Document(text=t) for t in text_list]
+
+# build index
+index = VectorStoreIndex.from_documents(documents)
+Triplets:
+(*, USE_CASE, how to load text into a Document class)
+(*, USE_CASE, how to initialize a VectorStoreClass using the 'from_documents' method and passing documents of type Document as input)
+(*, INSIGHT, how to load documents into a VectorStoreIndex)
+Example2:
+Snippet:
+Privacy and Security
+By default, LLamaIndex sends your data to OpenAI for generating embeddings and natural language responses. However, it is important to note that this can be configured according to your preferences. LLamaIndex provides the flexibility to use your own embedding model or run a large language model locally if desired.
+Triplets:
+(*, INSIGHT, llama index by default uses openai models which can be configured to be different)
+(*, INSIGHT, llama index provides the flexibility to run your own embedding model or a large language model locally if desired)
+------------
+Snippet:
+{snippet}
+Triplets:"""

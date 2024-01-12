@@ -1,9 +1,12 @@
-from llama_agents.FunctionCaller import FunctionManager, AGENT_DESCRIPTION
+from llama_agents.FunctionCaller import FunctionManager, AGENT_DESCRIPTION, GodFather, AGENT_INSTRUCTIONS, get_context
 from llama_agents.tools import tools as _tools
 from llama_agents.tools import return_info
 from llama_index.llms.openai import OpenAI
 from llama_index.types import ChatMessage
 import asyncio
+import threading
+import time
+import queue
 
 # async def func_caller():
 #     func_agent = FunctionManager.from_tools(
@@ -18,76 +21,79 @@ import asyncio
 #         async for token in r.async_response_gen():
 #             print(token)
 
-
 if __name__ == "__main__":
-    func_agent = FunctionManager.from_tools(
-        tools=_tools,
-        verbose=True,
-        max_function_calls=5,
+
+    func_agent = GodFather.from_tools(
+        tools=[],
+        verbose=False,
+        # max_function_calls=5,
         llm=OpenAI('gpt-4'),
     )
-    r = func_agent.chat("""Get the code to the init method of the open ai agent class""")
-    print(r)
-    # last_tuple = None
-    # streaming_response = await func_agent.astream_chat("""How would I use async_chat in the agentrunner class and how would I call teh function and return the output?""",
-    # chat_history=func_agent.chat_history)
-    # print(type(streaming_response))
-    # print(type(r))
-    # print(streaming_response)
+    
+    chat_history = [ChatMessage(role="system", content=AGENT_INSTRUCTIONS)]
 
-
-    # for token in streaming_response.response_gen:
-    #     print(token)
-                                                
     # while True:
-    #     _input = input("Enter a query: ")
-    #     r = func_agent.chat(_input)
-    #     print(r)
 
-    # call the function caller agent
-    # asyncio.run(func_caller())
+    _input = """When I have created a chromaDB with vector indexes, how can I get the filename metadate so I can compare it against incoming docs to prevent from indexing the same document several times?"""
 
-# (venv) (base) chinmayshrivastava@BL-lindsay-C02VP03JJ9JR agents % python llama_agent_test.py
-# Added user message to memory: How are SYS ptompts being accessed in teh llamacpp class?
-# INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-# === Calling Function ===
-# Calling function: semantic_node_finder with args: {
-# "query": "SYS prompts in llamacpp class"
-# }
-# INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-# INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-# Got output: Find the top five nodes that match the query:
-# Query: SYS prompts in llamacpp class
-# -------------------
-# node name: patch_llmpredictor_predict type: function
-# node name: LLMPredictor type: class
-# node name: test_basic type: function
-# node name: prompt type: method
-# node name: _print_llm_event type: method
-# -------------------
+    # r = func_agent.chat(_input, chat_history=chat_history)
 
-# ========================
+    r = func_agent.break_query(_input)
 
-# INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-# === Calling Function ===
-# Calling function: return_info with args: {
-# "node_name": "prompt",
-# "class_name": "LLMPredictor"
-# }
-# Got output: The following is the code related to the node requested in the network graph found in the file represented by the path:
-# Path: /llama_index/llm_predictor/base.py
-# -------------------
+    q = queue.Queue()
 
-# -------------------
+    # print in green, "godfather deploys killers"
+    print("\033[92m{}\033[00m".format("Godfather deploys killers!"))
 
-# ========================
+    def killers(i):
+        result = get_context(i)
+        q.put(result)
 
-# INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-# === Calling Function ===
-# Calling function: return_info with args: {
-# "node_name": "_print_llm_event",
-# "class_name": "LLMPredictor"
-# }
-# Got output: The following is the code related to the node requested in the network graph found in the file represented by the path:
-# Path: /llama_index/llm_predictor/base.py
-# -------------------
+    threads = []
+    for i in range(len(r)):
+        t = threading.Thread(target=killers, args=(r[i],))
+        threads.append(t)
+        t.start()
+        time.sleep(0.1)
+    for t in threads:
+        t.join()
+
+    tr = []
+    while not q.empty():
+        tr.append(q.get())
+
+    # relevant information
+    rel_info = set()
+    max_len = 3
+    i = 0
+    # print tr in blue
+    print("\033[94m{}\033[00m".format(tr))
+    while True:
+        _temp = []
+        for j in range(len(tr)):
+            if i < len(tr[j]):
+                try:
+                    _temp.append(tr[j][i])
+                except:
+                    pass
+        for t in _temp:
+            if len(rel_info) < max_len:
+                rel_info.add(t)
+        if len(rel_info) == max_len:
+            break
+        i += 1
+    rel_info = list(rel_info)
+
+    _context = "The following is relevant information to help answer the query:\n"
+    for i in range(len(rel_info)):
+        _context += "----------\n"
+        _context += rel_info[i] + "\n"
+
+    _prompt = _context + "\nQuery: " + _input + "\nAnswer:"
+
+    # print the prompt in red
+    print("\033[91m{}\033[00m".format(_prompt))
+
+    chat_history.append(ChatMessage(role="user", content=_prompt))
+    rn = func_agent.chat(_input, chat_history=chat_history)
+    print(rn)

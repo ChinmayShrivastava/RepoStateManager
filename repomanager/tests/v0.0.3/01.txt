@@ -1,0 +1,40 @@
+The following is some context for the class OpenAIAgent.
+The class OpenAIAgent has the following properties:
+
+OpenAIAgent : class-method : __init__
+OpenAIAgent : class-method : from_tools
+OpenAIAgent : class-method : get_tools
+AgentRunner : class-method : __init__
+AgentRunner : class-method : chat_history
+AgentRunner : class-method : reset
+AgentRunner : class-method : create_task
+AgentRunner : class-method : delete_task
+AgentRunner : class-method : list_tasks
+AgentRunner : class-method : get_task
+AgentRunner : class-method : get_upcoming_steps
+AgentRunner : class-method : get_completed_steps
+AgentRunner : class-method : _run_step
+AgentRunner : class-method : run_step
+AgentRunner : class-method : stream_step
+AgentRunner : class-method : finalize_response
+AgentRunner : class-method : _chat
+AgentRunner : class-method : chat
+AgentRunner : class-method : stream_chat
+AgentRunner : class-method : undo_step
+BaseOpenAIAgent : class-method : __init__
+BaseOpenAIAgent : class-method : chat_history
+BaseOpenAIAgent : class-method : all_messages
+BaseOpenAIAgent : class-method : latest_function_call
+BaseOpenAIAgent : class-method : latest_tool_calls
+BaseOpenAIAgent : class-method : reset
+BaseOpenAIAgent : class-method : get_tools
+BaseOpenAIAgent : class-method : _should_continue
+BaseOpenAIAgent : class-method : init_chat
+BaseOpenAIAgent : class-method : _process_message
+BaseOpenAIAgent : class-method : _get_stream_ai_response
+BaseOpenAIAgent : class-method : _call_function
+BaseOpenAIAgent : class-method : _get_llm_chat_kwargs
+BaseOpenAIAgent : class-method : _get_agent_response
+BaseOpenAIAgent : class-method : _chat
+BaseOpenAIAgent : class-method : chat
+BaseOpenAIAgent : class-method : stream_chat

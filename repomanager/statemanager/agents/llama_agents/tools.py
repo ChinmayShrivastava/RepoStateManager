@@ -2,7 +2,7 @@ import sys
 sys.path.append("../")
 sys.path.append("../../")
 from vspace._chromadb import return_collection
-from vspace.vsearch import PineconeVectorSearch
+from vspace.vsearch import PineconeVectorSearch, VectorSearch
 from stringsearch.fuzzy import G, StringSearch
 from retrievers.graph import *
 from retrievers.defaults import *
@@ -175,7 +175,9 @@ def return_info(
 def semantic_node_finder(
         query: str, 
         type: str = None) -> str:
-    """Takes in a human language query and returns the top 5 nodes that match the query and the optional type of the node, if requested"""
+    """Takes in a 3-5 word human language query and returns the top 5 nodes that match the query and the optional type of the node, if requested"""
+    if len(query.split(' ')) > 5:
+        return "Please enter a query with 3-5 words."
     results1 = vectorsearch_expl.search(query=query, type=type)
     results2 = vectorsearch_code.search(query=query, type=type)
     # merge the two results and rerank them according to the number of times they appear
@@ -202,11 +204,17 @@ def semantic_node_finder(
     string_to_return += '-------------------\n'
     return string_to_return
 
+def docs_search(query: str):
+    """This tool returns some examples and/or explanation of the subject of the query"""
+    pass
+
+
 _tools = [
     get_node_edges,
     return_info,
     semantic_node_finder,
 ]
+
 tools = [
     FunctionTool.from_defaults(fn=tool) for tool in _tools
 ]

@@ -48,5 +48,33 @@ def migrate_to_database(repo_name):
         pass
     return
 
-if __name__ == '__main__':
-    migrate_to_database()
+# mark all nodes and edges as migrated to neo4j
+def mark_all_migrated(repo_name):
+    repo_id = repo_map[f'{repo_name}']
+    G = pickle.load(open(f'state/{repo_id}/state_0.pkl', 'rb'))
+    for node in G.nodes:
+        G.nodes[node]['migrated_to_neo4j'] = True
+        logging.info(f'marked node {node} as migrated')
+    for edge in G.edges:
+        G.edges[edge]['migrated_to_neo4j'] = True
+        logging.info(f'marked edge {edge} as migrated')
+    pickle.dump(G, open(f'state/{repo_id}/state_0.pkl', 'wb'))
+    return
+
+# check if the migrated tag is present for all nodes and edges
+def check_all_migrated(repo_name):
+    repo_id = repo_map[f'{repo_name}']
+    print(repo_id)
+    G = pickle.load(open(f'state/{repo_id}/state_0.pkl', 'rb'))
+    for node in G.nodes:
+        if 'migrated_to_neo4j' not in G.nodes[node]:
+            print(node)
+    for edge in G.edges:
+        if 'migrated_to_neo4j' not in G.edges[edge]:
+            print(edge)
+    return
+
+# if __name__ == '__main__':
+    # migrate_to_database()
+    # mark_all_migrated('llama_index')
+    # check_all_migrated('llama_index')

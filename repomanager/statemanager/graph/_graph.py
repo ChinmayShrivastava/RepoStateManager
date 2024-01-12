@@ -1,4 +1,6 @@
 from abc import abstractclassmethod, abstractmethod, ABC
+
+from statemanager.graph.type import ReturnedEdges
 from .type import *
 from typing import Optional
 import pickle
@@ -76,6 +78,10 @@ class NetworkXGraph(Graph):
         G: Optional[nx.Graph] = None,
         ):
         super().__init__()
+        self.repo_id = repo_id
+        self.name = name
+        self.path = path
+        self.G = G if G is not None else None
 
     @classmethod
     def from_G(
@@ -110,6 +116,9 @@ class NetworkXGraph(Graph):
     def get_edge(self, edge) -> ReturnedEdge:
         pass
 
+    def get_edges(self) -> ReturnedEdges:
+        pass
+
     def get_nodes(self) -> ReturnedNodes:
         pass
 
@@ -132,6 +141,27 @@ class NetworkXGraph(Graph):
             logging.error(">===Code not retrieved===<")
             return
         return get_code(node_metadata, self.repo_id, elementname)
+    
+    def get_edges_by_type(self, node_metadata) -> ReturnedEdges:
+        if node_metadata['type'] == 'class':
+            methods_direct = []
+            methods_indirect = []
+            parent_class = set()
+            for edge in self.G.edges(node_metadata['name'], data=True):
+                if edge[2]['type'] == 'class-method':
+                    methods_direct.append(ReturnedEdge(start_node=edge[0], end_node=edge[1], metadata=edge[2]))
+                elif edge[2]['type'] == 'parent_class':
+                    parent_class.add(edge[1])
+            for parent in parent_class:
+                for edge in self.G.edges(parent, data=True):
+                    if edge[2]['type'] == 'class-method':
+                        methods_indirect.append(ReturnedEdge(start_node=edge[0], end_node=edge[1], metadata=edge[2]))
+            methods = methods_direct
+            methods.extend(methods_indirect)
+            return ReturnedEdges(edges=methods)
+        else:
+            # return all edges
+            return ReturnedEdges(edges=self.G.edges(node_metadata['name'], data=True))
     
 class Neo4JGraph(Graph):
 
