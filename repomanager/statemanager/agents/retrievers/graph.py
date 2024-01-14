@@ -37,7 +37,8 @@ def get_class_breakdown(code):
 def get_class_code(name, code):
     class_name, class_methods = get_class_breakdown(code)
     for method_name, method_code in class_methods:
-        code = code.replace(method_code, 'Method Goes Here -> Method name is \'' + method_name + '\'')
+        if '__init__' not in method_name:
+            code = code.replace(method_code, '    Method Goes Here -> Method name is \'' + method_name + '\'')
     return code
 
 def get_method_code(name, code):

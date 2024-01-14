@@ -1,6 +1,6 @@
 import sys
 sys.path.append("../")
-from agents import *
+from repomanager.statemanager.agents.legacy_agents import *
 from vspace.vsearch import VectorSearch
 from typing import List
 from langchain.agents import tool

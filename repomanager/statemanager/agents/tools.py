@@ -8,18 +8,18 @@ from stringsearch.fuzzy import StringSearch, G
 from retrievers.graph import *
 from retrievers.defaults import *
 
-with open("../state/running_state.json", "r") as f:
+with open("state/running_state.json", "r") as f:
     running_state = json.load(f)
 repo_id = running_state["repo_id"]
 
-with open(f"../state/{repo_id}/meta/dispatch.json", "r") as f:
+with open(f"state/{repo_id}/meta/dispatch.json", "r") as f:
     dispatch = json.load(f)
 
 # open the state/repoid/meta/schema.json
-with open(f"../state/{repo_id}/meta/schema.json", "r") as f:
+with open(f"state/{repo_id}/meta/schema.json", "r") as f:
     schema = json.load(f)
 
-path_ = f"../state/{repo_id}/meta/storage"
+path_ = f"state/{repo_id}/meta/storage"
 explanations = return_collection(path=path_, collection_name="explanations")
 explanations.count()
 triplets = return_collection(path=path_, collection_name="triplets")

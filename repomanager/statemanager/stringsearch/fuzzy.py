@@ -4,11 +4,11 @@ import pickle
 import sys
 from typing import List, Optional
 
-with open("../state/running_state.json", "r") as f:
+with open("state/running_state.json", "r") as f:
     running_state = json.load(f)
 repo_id = running_state["repo_id"]
 
-G = pickle.load(open(f'../state/{repo_id}/state_0.pkl', 'rb'))
+G = pickle.load(open(f'state/{repo_id}/state_0.pkl', 'rb'))
 
 class StringSearch():
 

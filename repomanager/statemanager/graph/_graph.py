@@ -1,11 +1,11 @@
 from abc import abstractclassmethod, abstractmethod, ABC
 
-from statemanager.graph.type import ReturnedEdges
+from graph.type import ReturnedEdges
 from .type import *
 from typing import Optional
 import pickle
 import logging
-from statemanager.agents.retrievers.graph import get_code, ELEMENTS_THAT_CONTAIN_CODE, get_method_code, get_class_code
+from agents.retrievers.graph import get_code, ELEMENTS_THAT_CONTAIN_CODE, get_method_code, get_class_code
 import networkx as nx
 from neo4j import GraphDatabase
 import time

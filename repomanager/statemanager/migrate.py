@@ -40,7 +40,7 @@ def migrate_to_database(repo_name):
         logging.info(f'neo4j migration complete for {repo_name}')
 
     if not migrations_tracker['vector']:
-        migrate_vector(repo_name, repo_id, G, code=True)
+        migrate_vector(repo_name, repo_id, G, docs=True)
         migrations_tracker['vector'] = True
         with open(f'state/{repo_id}/meta/defaults/migrations.json', 'w') as f:
             json.dump(migrations_tracker, f)
@@ -74,7 +74,5 @@ def check_all_migrated(repo_name):
             print(edge)
     return
 
-# if __name__ == '__main__':
-    # migrate_to_database()
-    # mark_all_migrated('llama_index')
-    # check_all_migrated('llama_index')
+if __name__ == '__main__':
+    migrate_to_database()

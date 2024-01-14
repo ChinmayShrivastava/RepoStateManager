@@ -1,9 +1,14 @@
-from llama_agents.FunctionCaller import FunctionManager, AGENT_DESCRIPTION, GodFather, AGENT_INSTRUCTIONS, get_context
-from llama_agents.tools import tools as _tools
-from llama_agents.tools import return_info
+import sys
+import os
+# navigate to the parent directory, and make it as the current working directory
+os.chdir("../")
+sys.path.append("./")
+print(os.getcwd())
+print(sys.path)
+from agents.llama_agents.FunctionCaller import GodFather, AGENT_INSTRUCTIONS, get_context, DEFAULT_MODEL_NAME
+from vspace.pipelines.docsearch import LLMReranker
 from llama_index.llms.openai import OpenAI
 from llama_index.types import ChatMessage
-import asyncio
 import threading
 import time
 import queue
@@ -34,7 +39,8 @@ if __name__ == "__main__":
 
     # while True:
 
-    _input = """When I have created a chromaDB with vector indexes, how can I get the filename metadate so I can compare it against incoming docs to prevent from indexing the same document several times?"""
+    _input = """What are the methods available to the openaiagent class?"""
+    # _input = """What are openai agents and how to initialize it from tools?"""
 
     # r = func_agent.chat(_input, chat_history=chat_history)
 
@@ -60,34 +66,37 @@ if __name__ == "__main__":
 
     tr = []
     while not q.empty():
-        tr.append(q.get())
+        tr.extend(q.get())
+
+    reranker = LLMReranker(OpenAI(DEFAULT_MODEL_NAME))
+    reranked = reranker.rerank(_input, tr)
 
     # relevant information
-    rel_info = set()
-    max_len = 3
-    i = 0
-    # print tr in blue
-    print("\033[94m{}\033[00m".format(tr))
-    while True:
-        _temp = []
-        for j in range(len(tr)):
-            if i < len(tr[j]):
-                try:
-                    _temp.append(tr[j][i])
-                except:
-                    pass
-        for t in _temp:
-            if len(rel_info) < max_len:
-                rel_info.add(t)
-        if len(rel_info) == max_len:
-            break
-        i += 1
-    rel_info = list(rel_info)
+    # rel_info = set()
+    # max_len = 3
+    # i = 0
+    # # print tr in blue
+    # print("\033[94m{}\033[00m".format(tr))
+    # while True:
+    #     _temp = []
+    #     for j in range(len(tr)):
+    #         if i < len(tr[j]):
+    #             try:
+    #                 _temp.append(tr[j][i])
+    #             except:
+    #                 pass
+    #     for t in _temp:
+    #         if len(rel_info) < max_len:
+    #             rel_info.add(t)
+    #     if len(rel_info) == max_len:
+    #         break
+    #     i += 1
+    # rel_info = list(rel_info)
 
     _context = "The following is relevant information to help answer the query:\n"
-    for i in range(len(rel_info)):
+    for i in range(len(reranked)):
         _context += "----------\n"
-        _context += rel_info[i] + "\n"
+        _context += reranked[i] + "\n"
 
     _prompt = _context + "\nQuery: " + _input + "\nAnswer:"
 

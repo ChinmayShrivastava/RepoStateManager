@@ -117,41 +117,41 @@ def migrate(repo_name, repo_id, G):
 
     nodes = list(chunks(nodes, 8000))
 
-    # threads = []
-    # for i in range(len(nodes)):
-    #     t = threading.Thread(target=migrate_nodes, args=(nodes[i],))
-    #     threads.append(t)
-    #     t.start()
-    #     time.sleep(0.1)
-    # for t in threads:
-    #     t.join()
-            
-    # # wait for the threads to finish
-            
-    # edges = [edge for edge in G.edges(data=True)]
-
-    # edges = list(chunks(edges, 20000))
-
-    # threads = []
-    # for i in range(len(edges)):
-    #     t = threading.Thread(target=migrate_edges, args=(edges[i],))
-    #     threads.append(t)
-    #     t.start()
-    #     time.sleep(0.1)
-    # for t in threads:
-    #     t.join()
-
-    # wait for the threads to finish
-            
-    # add code and explanation where possible
     threads = []
     for i in range(len(nodes)):
-        t = threading.Thread(target=add_code, args=(nodes[i], repo_id))
+        t = threading.Thread(target=migrate_nodes, args=(nodes[i],))
         threads.append(t)
         t.start()
         time.sleep(0.1)
     for t in threads:
         t.join()
+            
+    # wait for the threads to finish
+            
+    edges = [edge for edge in G.edges(data=True)]
+
+    edges = list(chunks(edges, 20000))
+
+    threads = []
+    for i in range(len(edges)):
+        t = threading.Thread(target=migrate_edges, args=(edges[i],))
+        threads.append(t)
+        t.start()
+        time.sleep(0.1)
+    for t in threads:
+        t.join()
+
+    # wait for the threads to finish
+            
+    # add code and explanation where possible
+    # threads = []
+    # for i in range(len(nodes)):
+    #     t = threading.Thread(target=add_code, args=(nodes[i], repo_id))
+    #     threads.append(t)
+    #     t.start()
+    #     time.sleep(0.1)
+    # for t in threads:
+    #     t.join()
 
     # wait for the threads to finish
         
@@ -176,6 +176,10 @@ def add_code(nodes, repo_id):
 
 def migrate_nodes(nodes):
     for node in tqdm.tqdm(nodes, desc='nodes'):
+        if 'migrated_to_neo4j' in node[1] and node[1]['migrated_to_neo4j']==True:
+            # log in yellow (f'skipping node {node}')
+            logging.info('\033[93m' + f'skipping node {node}' + '\033[0m')
+            continue
         query = ''
         # add the name of the node
         query += "MERGE (n:Node {name: '" + format_text_for_neo4j(node[0]) + "'}) "
@@ -189,6 +193,10 @@ def migrate_nodes(nodes):
 
 def migrate_edges(edges):
     for edge in tqdm.tqdm(edges, desc='edges'):
+        if 'migrated_to_neo4j' in edge[2] and edge[2]['migrated_to_neo4j']==True:
+            # log in yellow (f'skipping edge {edge}')
+            logging.info('\033[93m' + f'skipping edge {edge}' + '\033[0m')
+            continue
         if 'type' not in edge[2]:
             continue
         query = ''

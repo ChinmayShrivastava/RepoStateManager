@@ -1,40 +1,35 @@
 import sys
-import os
-# navigate to the parent directory, and make it as the current working directory
-# os.chdir("../../")
-# sys.path.append("./")
-# print(os.getcwd())
-# print(sys.path)
+sys.path.append("../")
+sys.path.append("../../")
 from vspace._chromadb import return_collection
 from vspace.vsearch import PineconeVectorSearch, VectorSearch
 from stringsearch.fuzzy import G, StringSearch
-from agents.retrievers.graph import *
-from agents.retrievers.defaults import *
+from retrievers.graph import *
+from retrievers.defaults import *
 import json
 from llama_index.tools import FunctionTool
+from graph.retrieve import traverse_and_collect
 from graph._graph import NetworkXGraph, Neo4JGraph
 import os
 from dotenv import load_dotenv
 load_dotenv()
 import logging
-from vspace.pipelines.general import get_initial_information
-from vspace.pipelines.docsearch import get_docs
 
 logging.basicConfig(level=logging.INFO)
 
-with open("state/running_state.json", "r") as f:
+with open("../state/running_state.json", "r") as f:
     running_state = json.load(f)
 repo_name = running_state["repo_name"]
 repo_id = running_state["repo_id"]
 
-# with open(f"state/{repo_id}/meta/dispatch.json", "r") as f:
-#     dispatch = json.load(f)
+with open(f"../state/{repo_id}/meta/dispatch.json", "r") as f:
+    dispatch = json.load(f)
 
 # open the state/repoid/meta/schema.json
-with open(f"state/{repo_id}/meta/schema.json", "r") as f:
+with open(f"../state/{repo_id}/meta/schema.json", "r") as f:
     schema = json.load(f)
 
-path_ = f"state/{repo_id}/meta/storage"
+path_ = f"../state/{repo_id}/meta/storage"
 explanations = return_collection(path=path_, collection_name="explanations")
 explanations.count()
 triplets = return_collection(path=path_, collection_name="triplets")
@@ -51,10 +46,6 @@ vectorsearch_expl = PineconeVectorSearch(
 vectorsearch_code = PineconeVectorSearch(
     index_name=os.environ['INDEX_NAME'],
     collection_name=f"{repo_name}-code"
-    )
-vectorsearch_docs = PineconeVectorSearch(
-    index_name=os.environ['INDEX_NAME'],
-    collection_name=f"{repo_name}-docs"
     )
 
 # graph_nx = NetworkXGraph.from_G(
@@ -126,30 +117,18 @@ def get_node_edges(node_name: str, node_type: str = None):
         string_to_return += '-------------------\n'
     return string_to_return
 
-# old name was `return_info`
-def get_code(
+def return_info(
     node_name: str,
+    class_name: str = None,
     ):
-    """This tool takes in a node_name representing a class, function or a class_name.method_name and returns the associated code from the knowledge base."""
-    
-    # initialize the is_method flag
-    is_method = False
-    # if the node_name is a class.method, split it into class_name and method_name
-    if '.' in node_name:
-        # split the node_name into class_name and method_name
-        class_name, node_name = node_name.split('.')
-        # set the is_method flag to True
-        is_method = True
-    # else, set the class_name to None
-    else:
+    """Takes in node_name and returns code associated with it. Class name is required if the node is a method."""
+    # try:
+    starting_node = stringmatch.search_one(node_name)[0]
+    if class_name is not None and len(class_name)==0:
         class_name = None
-
     if class_name is not None:
         starting_node = stringmatch.search_one(node_name, 'class-method')[0]
         class_name = stringmatch.search_one(class_name)[0]
-    else:
-        # set the starting node as the closest fuzzy match to the node_name
-        starting_node = stringmatch.search_one(node_name)[0]
 
     snode = graph_nx.get_node_metadata(starting_node)
     snodetype = snode['type']
@@ -161,52 +140,79 @@ def get_code(
     if snodetype not in CODE_TYPES:
         return f"Sorry, I can only return information on {','.join(CODE_TYPES)}. This is a {snodetype}. Try again with a file."
 
-    _code = graph_nx.get_code(snode, elementname)
-    
+    to_dispatch = dispatch[snodetype]
+
+    if to_dispatch['getCode']:
+        # # read the state/repo_id/elements/elementname file into _code
+        # with open(f"../state/{repo_id}/elements/{elementname}", "r") as f:
+        #     _code = f.read()
+        _code = graph_nx.get_code(snode, elementname)
+
+    # if to_dispatch['getExplanation']:
+    #     # get the explanation
+    #     explanation = snode['explanation']
+            
     dir_path = elementname.split('!!')[0].replace('@@', '/')+'.py'
 
+    # _append = get_node_information(starting_node)
+
     string_to_return = ''
-    if is_method:
-        string_to_return += f"The code info for the method {node_name} for the class {class_name} is:\n"
-    else:
-        string_to_return += f"The code info for the {snode['type']} {node_name} is:\n"
+    # string_to_return += _append
+    # add the code to it, explaining what it is
     string_to_return += (
-        'The path to the code is:\n'
+        'The following is the code related to the node requested in the network graph found in the file represented by the path:\n'
         'Path: ' + dir_path + '\n'
         '-------------------\n'
-        'The code is:\n'
     )
     string_to_return += f"{_code}\n"
     string_to_return += '-------------------\n'
+    # except Exception as e:
+    #     print(e)
+    #     string_to_return = f"Sorry, I couldn't find any information on {node_name}. Something went wrong."
 
     return string_to_return
 
-def semantic_info_finder(
-        query: str) -> str:
-    """This tool returns relevant information to the query from the knowledge base."""
-    # """Takes in a 3-5 word human language query and returns the top 5 nodes that match the query and the optional type of the node, if requested"""
+def semantic_node_finder(
+        query: str, 
+        type: str = None) -> str:
+    """Takes in a 3-5 word human language query and returns the top 5 nodes that match the query and the optional type of the node, if requested"""
     if len(query.split(' ')) > 5:
         return "Please enter a query with 3-5 words."
-    r = get_initial_information(query, graph_nx, vectorsearch_expl)
-    return r
+    results1 = vectorsearch_expl.search(query=query, type=type)
+    results2 = vectorsearch_code.search(query=query, type=type)
+    # merge the two results and rerank them according to the number of times they appear
+    dict_of_counts = {}
+    for result in results1:
+        if result in dict_of_counts:
+            dict_of_counts[result] += 1
+        else:
+            dict_of_counts[result] = 1
+    for result in results2:
+        if result[0] in dict_of_counts:
+            dict_of_counts[result] += 1
+        else:
+            dict_of_counts[result] = 1
+    results = sorted(dict_of_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+    results = [result[0] for result in results]
+    string_to_return = (
+        'Find the top five nodes that match the query:\n'
+        f"Query: {query}\n"
+        '-------------------\n'
+    )
+    for result in results:
+        string_to_return += f"node name: {result[0]} type: {result[1]}\n"
+    string_to_return += '-------------------\n'
+    return string_to_return
 
-def docs_search(
-        query: str
-        ) -> str:
-    """This tool returns some use cases and insights from the knowledge base based on the query. Use it to search for documentation."""
-    docs = get_docs(query, vectorsearch_docs, graph_nx)
-    _string = 'The following is some information extracted from the documentation:\n'
-    _string += '-------------------\n'
-    for doc in docs:
-        _string += f"{doc}\n"
-        _string += '-------------------\n'
-    return _string
+def docs_search(query: str):
+    """This tool returns some examples and/or explanation of the subject of the query"""
+    pass
+
 
 _tools = [
-    docs_search,
     get_node_edges,
-    get_code,
-    semantic_info_finder,
+    return_info,
+    semantic_node_finder,
 ]
 
 tools = [
@@ -214,6 +220,5 @@ tools = [
 ]
 
 if __name__ == "__main__":
-
-    s = get_code('Openaiagent.from_tools')
+    s = return_info('__init__', 'BaseOpenAIAgent')
     print(s)

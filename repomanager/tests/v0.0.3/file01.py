@@ -24,7 +24,6 @@ def get_initial_information(query: str, graph, explanations, triplets) -> str:
         _string += "Please select one of the classes above and request for more information"
         return _string
 
-
 def get_relevant_class(query: str, explanations) -> str:
     """takes in a query and try to logically reason for relevant class"""
     _prompt = VECTOR_SEARCH_FOR_CLASS.format(query=query)
