@@ -157,3 +157,5 @@ cython_debug/
 data/
 state/
 chroma.sqlite3
+
+.pkl
