@@ -1,6 +1,7 @@
 1. Generate and index explanations for class methods
 2. Find a way to remove async methods from being returned for no reason
-3. Only classes are being returned by semantic_ifo_finder, make sure other things are returned too
+3. Only classes are being returned by semantic_info_finder, make sure other things are returned too
 4. Make sure the godfather doesn't deploy unnecessary killers
 5. The class code should also return the parent class and the inherited methods
 6. Some doc chunks are too large, next time ensure the doc chunks are small enough, currently we are refraining from using bigger chunks. Info lost.
+7. build memory for god father

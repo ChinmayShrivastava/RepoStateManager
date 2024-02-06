@@ -1,5 +1,5 @@
 from .mods.openaiagent import OpenAIAgent, DEFAULT_MODEL_NAME
-from .tools import tools
+from .tools import tools, godfather_tools
 from llama_index.llms.openai import OpenAI
 from llama_index.llms.base import ChatMessage
 from typing import List
@@ -7,6 +7,9 @@ from llama_index.tools import FunctionTool
 from pydantic import BaseModel
 from llms.parse import parse_trilet
 import random
+import queue
+import threading
+from .Reranker import LLMReranker
 
 # AGENT_DESCRIPTION = (
 #     "As a function caller, you have access to functions that can help access a code library named 'Llama Index'."
@@ -56,6 +59,7 @@ AGENT_INSTRUCTIONS = (
     "Be succinct and direct, and abstract away what you don't know. Don't generate unknown information."
     "Be helpful to the user by providing example where you can."
     "Don't generate long answers, no-one likes long answers."
+    "Always call the call_knowledge_base_or_not tool for each query, no matter what."
 )
 
 BREAK_QUERY = """You can request the code and functionality when needed but you need to provide a rich and succinct query in exchange.
@@ -91,7 +95,7 @@ def get_context(query, verbose=True) -> List[str]:
         tools=tools,
         verbose=verbose,
         max_function_calls=2,
-        llm=OpenAI('gpt-4'),
+        llm=OpenAI('gpt-3.5-turbo'),
     )
     r = fm.chat(query,
     chat_history=fm.chat_history)
@@ -164,8 +168,11 @@ class GodFather(OpenAIAgent):
     
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.tools = godfather_tools
         self.llm = OpenAI(DEFAULT_MODEL_NAME)
         self.llm4 = OpenAI('gpt-4')
+        self._chat_history = [ChatMessage(role="system", content=AGENT_INSTRUCTIONS)]
+        self.reranker = LLMReranker(OpenAI(DEFAULT_MODEL_NAME))
 
     def break_query(self, query):
         """Breaks a query into smaller queries"""
@@ -173,3 +180,46 @@ class GodFather(OpenAIAgent):
         r = self.llm.complete(_prompt).text
         queries = parse_trilet(r)
         return queries
+    
+    def killers(self, i, q):
+        result = get_context(i)
+        q.put(result)
+    
+    def assassinate(self, query):
+        queries = self.break_query(query)
+        q = queue.Queue()
+        threads = []
+        for i in range(len(queries)):
+            t = threading.Thread(target=self.killers, args=(queries[i], q))
+            threads.append(t)
+            t.start()
+            # time.sleep(0.1)
+        for t in threads:
+            t.join()
+        tr = []
+        while not q.empty():
+            tr.extend(q.get())
+        reranked = self.reranker.rerank(query, tr)
+        _context = "The following is relevant information to help answer the query:\n"
+        for i in range(len(reranked)):
+            _context += "----------\n"
+            _context += reranked[i] + "\n"
+        _prompt = _context + "\nQuery: " + query + "\nAnswer:"
+        copy_chat_history = self._chat_history.copy()
+        # copy_chat_history.append(ChatMessage(role="user", content=_prompt))
+        self._chat_history.append(ChatMessage(role="user", content=query))
+        return self.astream_chat(_prompt, chat_history=copy_chat_history)
+
+    def decision(self, query):
+        t = self.create_task(query)
+        task_id = t.task_id
+        r = self.run_step(task_id)
+        # print r in red
+        # print("\033[91m{}\033[00m".format(r))
+        if r.output.response == "None":
+            if r.output.sources[0].content == "[KILL]":
+                return self.assassinate(query)
+            else:
+                return self.astream_chat(query, chat_history=self._chat_history)
+        else:
+            return self.astream_chat(query, chat_history=self._chat_history)

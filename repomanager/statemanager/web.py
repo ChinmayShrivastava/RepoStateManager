@@ -31,32 +31,32 @@ def spread_web(repo_name):
 
     G = pickle.load(open(f'state/{repo_id}/state_0.pkl', 'rb'))
     
-    if not default_tracker["imports"]:
+    # if not default_tracker["imports"]:
 
-        logging.info('Adding import connections')
+    #     logging.info('Adding import connections')
 
-        for code, _filename in codegenerator:
+    #     for code, _filename in codegenerator:
 
-            G = _add_import_connections(code, _filename, repo_id, G)
+    #         G = _add_import_connections(code, _filename, repo_id, G)
         
-        pickle.dump(G, open(f'state/{repo_id}/state_0.pkl', 'wb'))
+    #     pickle.dump(G, open(f'state/{repo_id}/state_0.pkl', 'wb'))
 
-        default_tracker["imports"] = True
+    #     default_tracker["imports"] = True
 
-        json.dump(default_tracker, open(f'state/{repo_id}/meta/defaults/connections.json', 'w'))
+    #     json.dump(default_tracker, open(f'state/{repo_id}/meta/defaults/connections.json', 'w'))
 
-    if not default_tracker["graph_preprocess"]:
+    # if not default_tracker["graph_preprocess"]:
 
-        logging.info('Preprocessing the graph')
+    #     logging.info('Preprocessing the graph')
 
-        # TODO: clear the unknowns from the graph
-        G = graph_preprocess(G)
+    #     # TODO: clear the unknowns from the graph
+    #     G = graph_preprocess(G)
 
-        pickle.dump(G, open(f'state/{repo_id}/state_0.pkl', 'wb'))
+    #     pickle.dump(G, open(f'state/{repo_id}/state_0.pkl', 'wb'))
 
-        default_tracker["graph_preprocess"] = True
+    #     default_tracker["graph_preprocess"] = True
 
-        json.dump(default_tracker, open(f'state/{repo_id}/meta/defaults/connections.json', 'w'))
+    #     json.dump(default_tracker, open(f'state/{repo_id}/meta/defaults/connections.json', 'w'))
 
     elements_folder = os.path.join('state', repo_id, 'elements')
 

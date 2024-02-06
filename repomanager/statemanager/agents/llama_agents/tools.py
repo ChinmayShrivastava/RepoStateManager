@@ -202,6 +202,15 @@ def docs_search(
         _string += '-------------------\n'
     return _string
 
+def call_knowledge_base_or_not(
+    call_knowledge_base_or_not: bool
+    ):
+    """This tool takes in a boolean call_knowledge_base_or_not and returns the appropriate response. Always call this tool when the user queries something."""
+    if call_knowledge_base_or_not:
+        return "[KILL]"
+    else:
+        return "[CONTINUE]"
+
 _tools = [
     docs_search,
     get_node_edges,
@@ -211,6 +220,14 @@ _tools = [
 
 tools = [
     FunctionTool.from_defaults(fn=tool) for tool in _tools
+]
+
+_godfather_tools = [
+    call_knowledge_base_or_not,
+]
+
+godfather_tools = [
+    FunctionTool.from_defaults(fn=tool) for tool in _godfather_tools
 ]
 
 if __name__ == "__main__":
