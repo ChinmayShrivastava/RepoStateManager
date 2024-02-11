@@ -15,16 +15,8 @@ DEFAULT_DOCUMENT_CONTEXT_DEPENDENCY_DISPATCH = {
 }
 
 def document_context_dependency_check(key, dispatch):
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            # check if the dependency is satisfied
-            print(dispatch)
-            for d in DEFAULT_DOCUMENT_CONTEXT_DEPENDENCY_DISPATCH[key]:
-                assert dispatch[d]
-            # invoke the function
-            func(*args, **kwargs)
-        return wrapper
-    return decorator
+    for d in DEFAULT_DOCUMENT_CONTEXT_DEPENDENCY_DISPATCH[key]:
+        assert dispatch[d]
 
 def dispatch_next_step(obj, dispatch):
     vocab = {
@@ -42,32 +34,5 @@ def dispatch_next_step(obj, dispatch):
         "persist",
     ]
     for k in order:
-        print(k)
         if not dispatch[k]:
             vocab[k]()
-
-# DISPATCH = {
-#     'clone': False,
-#     'map': False,
-#     'tree': False,
-#     'initstate': False,
-# }
-
-# DEPENDENCY_DISPATCH = {
-#     'clone': [],
-#     'map': ['clone'],
-#     'tree': ['map'],
-#     'initstate': ['tree'],
-# }
-
-# # define a decorator for dependency checking based on a key
-# def dependency_check(key, dispatch):
-#     def decorator(func):
-#         def wrapper(*args, **kwargs):
-#             # check if the dependency is satisfied
-#             for d in DEPENDENCY_DISPATCH[key]:
-#                 assert dispatch[d]
-#             # invoke the function
-#             func(*args, **kwargs)
-#         return wrapper
-#     return decorator

@@ -19,15 +19,14 @@ load_dotenv()
 
 class DocumentContext:
 
-    dispatch = None
     vector_collection_name = 'insight_engine'
 
     def __init__(
             self,
-            chunks: list = None,
-            G: nx.Graph = None,
+            chunks: list = [],
+            G: nx.Graph = nx.DiGraph(),
             verbose: bool = True,
-            document_name: str = None,
+            document_name: str = '',
             persist_dir: str = None,
             is_new = True,
         ):
@@ -36,7 +35,7 @@ class DocumentContext:
             logging.basicConfig(level=logging.INFO)
         else:
             logging.basicConfig(level=logging.ERROR)
-        self.llm = OpenAI()
+        self.llm = OpenAI(max_tokens=512)
         self.persist_dir = persist_dir
         self.graph_dir = f"{self.persist_dir}/connections/"
         self.vector_collection_dir = f"{self.persist_dir}/indices/"
@@ -107,6 +106,21 @@ class DocumentContext:
             )
     
     @classmethod
+    def from_chunks(
+            cls,
+            chunks,
+            persist_dir,
+            verbose: bool = True,
+            is_new = True
+        ):
+        return cls(
+            chunks=chunks,
+            verbose=verbose,
+            persist_dir=persist_dir,
+            is_new=is_new
+        )
+    
+    @classmethod
     def load_existing(cls, persist_dir, verbose: bool = True):
         return cls(
             verbose=verbose,
@@ -128,7 +142,12 @@ class DocumentContext:
         with open(f"{self.persist_dir}/connections/graph.pkl", "wb") as f:
             pickle.dump(self.G, f)
         return
-    
+
+    def _save_chunks(self):
+        with open(f"{self.persist_dir}/chunks.json", "w") as f:
+            json.dump(self.chunks, f, indent=4)
+        return
+
     def _save_metadata(self):
         with open(f"{self.persist_dir}/metadata.json", "w") as f:
             json.dump(self.document_metadata, f, indent=4)
@@ -151,6 +170,7 @@ class DocumentContext:
     
     def update_state(self):
         self._save_graph()
+        self._save_chunks()
         self._update_metadata()
         self._save_metadata()
         return
@@ -175,13 +195,21 @@ class DocumentContext:
                 self.G = connect_identifier_node_to_table_root(self.G, identifier_nodeid)
         return
 
-    @document_context_dependency_check('get_unique_identifiers', dispatch)
     def _add_all_unique_identifiers(self):
+        document_context_dependency_check('get_unique_identifiers', self.dispatch)
         for chunk_no in tqdm.tqdm(range(len(self.chunks)), desc="Adding unique identifiers"):
             # log
             logging.info(f'Adding unique identifiers for chunk {chunk_no+1} out of {len(self.chunks)}.')
-            chunk = self.chunks[chunk_no]['text']
-            identifiers = self._get_unique_chunk_identifiers(chunk)
+            if 'identifiers' in self.chunks[chunk_no].keys():
+                identifiers = self.chunks[chunk_no]['identifiers']
+            else:
+                chunk = self.chunks[chunk_no]['text']
+                identifiers = self._get_unique_chunk_identifiers(chunk)
+            # if verbose, print in green
+            if self.verbose:
+                print(f"\033[92mExtracted Identifiers: {identifiers}\033[00m")
+            self.chunks[chunk_no]['identifiers'] = identifiers
+            self._save_chunks()
             self._add_unique_chunk_identifiers_to_graph(self.chunks[chunk_no], identifiers)
         # log
         logging.info('Added all unique identifiers.')
@@ -199,6 +227,8 @@ class DocumentContext:
 
     def _add_citations_to_graph(self, chunk_id, citations):
         for tuple in citations:
+            if len(tuple) < 2:
+                continue
             referee, referred = tuple
             referee = str(referee).lower()
             referred = str(referred).lower()
@@ -209,7 +239,8 @@ class DocumentContext:
                 assert referee_nodeid is not None, f"Node with value {referee} not found in graph."
                 assert referred_nodeid is not None, f"Node with value {referred} not found in graph."
             except AssertionError as e:
-                logging.error(e)
+                if self.verbose:
+                    logging.error(e)
                 self.failed_citation_addition.append({
                     chunk_id: (referee, referred)
                 })
@@ -217,13 +248,27 @@ class DocumentContext:
             self.G.add_edge(referee_nodeid, referred_nodeid, type="cites")
         return
 
-    @document_context_dependency_check('get_citations', dispatch)
     def _add_all_citations(self):
+        document_context_dependency_check('get_citations', self.dispatch)
         for chunk_no in tqdm.tqdm(range(len(self.chunks)), desc="Adding citations"):
             # log
             logging.info(f'Adding citations for chunk {chunk_no+1} out of {len(self.chunks)}.')
-            chunk = self.chunks[chunk_no]['text']
-            citations = self._get_citations(chunk)
+            if 'citations' in self.chunks[chunk_no].keys():
+                citations = self.chunks[chunk_no]['citations']
+            else:
+                chunk = self.chunks[chunk_no]['text']
+                _citations = self._get_citations(chunk)
+                citations = []
+                for citation in _citations:
+                    if len(citation) > 2:
+                        citations.append((citation[0], " ".join(citation[1:])))
+                    else:
+                        citations.append(citation)
+            # if verbose, print in green
+            if self.verbose:
+                print(f"\033[92mExtracted Citations: {citations}\033[00m")
+            self.chunks[chunk_no]['citations'] = citations
+            self._save_chunks()
             self._add_citations_to_graph(chunk_id=chunk_no, citations=citations)
         # log
         logging.info('Added all citations.')
@@ -241,13 +286,18 @@ class DocumentContext:
     
     def _add_insights_to_graph(self, chunk_id, insights):
         for insight in insights:
+            if len(insight) < 2:
+                continue
             unique_identifier, insight = insight
+            unique_identifier = str(unique_identifier).lower()
+            insight = str(insight).lower()
             # get the nodeid for the unique identifier
             unique_identifier_nodeid = get_nodeid_from_nodevalue(self.G, unique_identifier)
             try:
                 assert unique_identifier_nodeid is not None, f"Node with value {unique_identifier} not found in graph."
             except AssertionError as e:
-                logging.error(e)
+                if self.verbose:
+                    logging.error(e)
                 self.failed_insight_addition.append({
                     chunk_id: (unique_identifier, insight)
                 })
@@ -258,19 +308,27 @@ class DocumentContext:
             self.G.add_edge(insight_nodeid, unique_identifier_nodeid, type="insight_from")
         return
 
-    @document_context_dependency_check('get_insights', dispatch)
     def _generate_insights(self):
+        document_context_dependency_check('get_insights', self.dispatch)
         for chunk_no in tqdm.tqdm(range(len(self.chunks)), desc="Adding insights"):
             # log
             logging.info(f'Adding insights for chunk {chunk_no+1} out of {len(self.chunks)}.')
-            chunk = chunk = self.chunks[chunk_no]['text']
-            _insights = self._generate_insight(chunk)
-            insights = []
-            for insight in _insights:
-                if len(insight) > 2:
-                    insights.append((insight[0], " ".join(insight[1:])))
-                else:
-                    insights.append(insight)
+            if 'insights' in self.chunks[chunk_no].keys():
+                insights = self.chunks[chunk_no]['insights']
+            else:
+                chunk = self.chunks[chunk_no]['text']
+                _insights = self._generate_insight(chunk)
+                insights = []
+                for insight in _insights:
+                    if len(insight) > 2:
+                        insights.append((insight[0], " ".join(insight[1:])))
+                    else:
+                        insights.append(insight)
+            # if verbose, print in green
+            if self.verbose:
+                print(f"\033[92mExtracted Insights: {insights}\033[00m")
+            self.chunks[chunk_no]['insights'] = insights
+            self._save_chunks()
             self._add_insights_to_graph(chunk_id=chunk_no, insights=insights)
         # log
         logging.info('Added all insights.')
@@ -279,8 +337,8 @@ class DocumentContext:
         self.update_state()
         return
     
-    @document_context_dependency_check('add_vector_index', dispatch)
     def add_vector_index(self):
+        document_context_dependency_check('add_vector_index', self.dispatch)
         collection = return_collection(path=self.vector_collection_dir, collection_name=self.vector_collection_name)
         # add all the nodes to the collection, nodes that are of the type insight
         # get all the nodes that are of the type insight
@@ -309,8 +367,8 @@ class DocumentContext:
         self.update_state()
         return
     
-    @document_context_dependency_check('persist', dispatch)
     def persist(self):
+        document_context_dependency_check('persist', self.dispatch)
         # persist the graph
         with open(f"{self.graph_dir}graph.pkl", "wb") as f:
             pickle.dump(self.G, f)

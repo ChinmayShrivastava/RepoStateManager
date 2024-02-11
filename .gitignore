@@ -154,11 +154,15 @@ cython_debug/
 
 .git
 
-data/
-state/
+*data/
+*state/
 chroma.sqlite3
 
 *.pkl
 *.sqlite3
 *.bin
 *.json
+
+*datasets/
+*deliverables/
+*idex01/

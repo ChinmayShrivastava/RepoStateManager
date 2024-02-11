@@ -24,12 +24,7 @@ def parse_tuple_string(s):
     result = []
     for part in parts:
         part = part.strip()
-        try:
-            # Try to parse as a float
-            result.append(float(part))
-        except ValueError:
-            # If it's not a float, keep as a string
-            result.append(part)
+        result.append(part)
     return tuple(result)
 
 def parse_tuple_list_string(s):
