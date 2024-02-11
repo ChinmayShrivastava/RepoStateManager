@@ -19,7 +19,10 @@ load_dotenv()
 
 class DocumentContext:
 
-    vector_collection_name = 'insight_engine'
+    vector_collection_name = {
+        "insights": "insight_engine",
+        "chunks": "chunk_engine",
+    }
 
     def __init__(
             self,
@@ -339,7 +342,7 @@ class DocumentContext:
     
     def add_vector_index(self):
         document_context_dependency_check('add_vector_index', self.dispatch)
-        collection = return_collection(path=self.vector_collection_dir, collection_name=self.vector_collection_name)
+        collection = return_collection(path=self.vector_collection_dir, collection_name=self.vector_collection_name['insights'])
         # add all the nodes to the collection, nodes that are of the type insight
         # get all the nodes that are of the type insight
         insight_nodes = [node for node in self.G.nodes if self.G.nodes[node]['type'] == 'insight']

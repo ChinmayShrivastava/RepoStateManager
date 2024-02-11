@@ -10,12 +10,12 @@ import logging
 class VectorGraph(BaseNetworkXGraph, BaseChromadbStore):
 
     def __init__(
-            self,
-            graph: nx.Graph,
-            collection,
-            llm = OpenAI(model="gpt-3.5-turbo"),
-            verbose: bool = True
-            ):
+        self,
+        graph: nx.Graph,
+        collection,
+        llm = OpenAI(model="gpt-3.5-turbo"),
+        verbose: bool = True
+    ):
         self.graph = graph
         self.collection = collection
         self.llm = llm
@@ -66,14 +66,22 @@ class VectorGraph(BaseNetworkXGraph, BaseChromadbStore):
         chunks = self._query(query, top_k)
         return [self.graph.nodes[chunk]["value"] for chunk in chunks]
 
-    def _generate_response_from_chunks(self, query: str, chunks: list[str]) -> list[str]:
+    def _generate_response_from_chunks(
+        self, 
+        query: str, 
+        chunks: list[str]
+    ) -> list[str]:
         prompt = DEFATLT_QUERY_RESPONSE_FROM_CHUNKS.format(
             excerpts="\n".join(chunks),
             query=query
         )
         return self.llm.complete(prompt).text
     
-    def generate_response(self, query: str, top_k: int = 5) -> list[str]:
+    def generate_response(
+        self, 
+        query: str, 
+        top_k: int = 5
+    ) -> list[str]:
         chunks = self.query(query, top_k)
         return self._generate_response_from_chunks(query, chunks)
     
