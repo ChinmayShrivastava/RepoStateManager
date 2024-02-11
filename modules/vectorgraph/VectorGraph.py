@@ -3,6 +3,7 @@ from modules.vectordb.chromadb import return_collection
 from modules.prompts.generation.RESPONSES import DEFATLT_QUERY_RESPONSE_FROM_CHUNKS
 from .base.BaseNetworkXGraph import BaseNetworkXGraph
 from .base.BaseChromadbStore import BaseChromadbStore
+from .utils import format_trace
 from llama_index.llms import OpenAI
 import pickle
 import logging
@@ -84,6 +85,18 @@ class VectorGraph(BaseNetworkXGraph, BaseChromadbStore):
     ) -> list[str]:
         chunks = self.query(query, top_k)
         return self._generate_response_from_chunks(query, chunks)
+    
+    def generate_response_with_trace(
+        self, 
+        query: str, 
+        top_k: int = 5,
+        to_print: bool = True
+    ) -> list[str]:
+        chunks = self.query(query, top_k)
+        response = self._generate_response_from_chunks(query, chunks)
+        if to_print:
+            print(format_trace(query, chunks, response))
+        return format_trace(query, chunks, response, to_print=False)
     
     def _query_with_chunk_ids(
         self, 
