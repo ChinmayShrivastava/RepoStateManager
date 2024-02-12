@@ -19,7 +19,7 @@ class VectorGraph(BaseNetworkXGraph, BaseChromadbStore):
         verbose: bool = True
     ):
         self.graph = graph
-        self.collection = insights_collection
+        self.insights_collection = insights_collection
         self.chunks_collection = chunks_collection
         self.llm = llm
         self.verbose = verbose
@@ -49,7 +49,7 @@ class VectorGraph(BaseNetworkXGraph, BaseChromadbStore):
     def __str__(self):
         len_graph_nodes = len(self.graph.nodes)
         len_graph_edges = len(self.graph.edges)
-        total_vector_elements = self.collection.count()
+        total_vector_elements = self.insights_collection.count() + self.chunks_collection.count()
         return f"VectorGraph with {len_graph_nodes} nodes and {len_graph_edges} edges.\nTotal vector elements: {total_vector_elements}"
     
     def _query(
