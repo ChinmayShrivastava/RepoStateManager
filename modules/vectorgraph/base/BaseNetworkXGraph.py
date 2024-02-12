@@ -30,10 +30,12 @@ class BaseNetworkXGraph:
                 nodes.append(node)
         return nodes
     
-    def _get_all_related_node_ids(self, node_id):
+    def _get_all_related_node_ids(self, node_id, ignore_nodes=None):
+        if ignore_nodes is None:
+            ignore_nodes = []
         successors = self.graph.successors(node_id)
         predecessors = self.graph.predecessors(node_id)
-        return list(successors) + list(predecessors)
+        return [node for node in list(successors) + list(predecessors) if node not in ignore_nodes]
     
     def _get_rel_map(self, node_id):
         # get all the relationships of a node
@@ -49,31 +51,31 @@ class BaseNetworkXGraph:
         return rel_map
     
     def _get_closest_identifier(self, node_id, max_level=3):
-        level = 0
+        # if nore is an identifier, return it
+        if self.graph.nodes[node_id]["type"] == "identifier":
+            return node_id, 0
+        level = 1
+        # ignore the node itself
+        ignore_nodes = [node_id]
+        # get the first level of successors and predecessors
+        rel_nodes = self._get_all_related_node_ids(node_id, ignore_nodes)
         while True:
-            # get the first level of successors and predecessors
-            successors = self.graph.successors(node_id)
-            predecessors = self.graph.predecessors(node_id)
             # check if there is any identifier
-            for successor in successors:
-                if self.graph.nodes[successor]["type"] == "identifier":
-                    return successor, level
-            for predecessor in predecessors:
-                if self.graph.nodes[predecessor]["type"] == "identifier":
-                    return predecessor, level
+            for _node in rel_nodes:
+                if self.graph.nodes[_node]["type"] == "identifier":
+                    return _node, level
             # if no identifier was found, check the next level
             if level >= max_level:
                 return None, None
             level += 1
             # get the next level of successors and predecessors
-            next_successors = []
-            next_predecessors = []
-            for successor in successors:
-                next_successors.extend(self.graph.successors(successor))
-            for predecessor in predecessors:
-                next_predecessors.extend(self.graph.predecessors(predecessor))
-            # update the node_id
-            node_id = next_successors + next_predecessors
+            next_rel_nodes = []
+            # ignore the nodes already checked
+            ignore_nodes.extend(rel_nodes)
+            for _node in rel_nodes:
+                next_rel_nodes.extend(self._get_all_related_node_ids(_node, ignore_nodes))
+            # update the rel_nodes
+            rel_nodes = next_rel_nodes
     
     def _get_unique_identifiers_from_nodes(self, nodeids: list[int]) -> list[int]: # insights is a list of node ids of type 'insight'
         # for each insight, get the closest identifier and return it
@@ -89,31 +91,32 @@ class BaseNetworkXGraph:
         Get the closest chunk to an identifier and the level of the relationship:
         Level represents the shortest path between the identifier and the chunk nodes.
         """
-        level = 0
+        # if it is a chunk, return it
+        if self.graph.nodes[identifier]["type"] == "chunk":
+            return identifier, 0
+        assert self.graph.nodes[identifier]["type"] == "identifier", "The node is not an identifier"
+        level = 1 # the level of the relationship, 1 is the closest
+        # ignore the node itself
+        ignore_nodes = [identifier]
+        # get the first level of successors and predecessors
+        rel_nodes = self._get_all_related_node_ids(identifier, ignore_nodes)
         while True:
-            # get the first level of successors and predecessors
-            successors = self.graph.successors(identifier)
-            predecessors = self.graph.predecessors(identifier)
             # check if there is any chunk
-            for successor in successors:
-                if self.graph.nodes[successor]["type"] == "chunk":
-                    return successor, level
-            for predecessor in predecessors:
-                if self.graph.nodes[predecessor]["type"] == "chunk":
-                    return predecessor, level
+            for _node in rel_nodes:
+                if self.graph.nodes[_node]["type"] == "chunk":
+                    return _node, level
             # if no chunk was found, check the next level
             if level >= max_level:
                 return None, None
             level += 1
             # get the next level of successors and predecessors
-            next_successors = []
-            next_predecessors = []
-            for successor in successors:
-                next_successors.extend(self.graph.successors(successor))
-            for predecessor in predecessors:
-                next_predecessors.extend(self.graph.predecessors(predecessor))
-            # update the identifier
-            identifier = next_successors + next_predecessors
+            next_rel_nodes = []
+            # ignore the nodes already checked
+            ignore_nodes.extend(rel_nodes)
+            for _node in rel_nodes:
+                next_rel_nodes.extend(self._get_all_related_node_ids(_node, ignore_nodes))
+            # update the rel_nodes
+            rel_nodes = next_rel_nodes
 
     def _get_unique_chunks_from_identifiers(self, identifiers: list[int]) -> list[int]: # identifiers is a list of node ids of type 'identifier'
         # for each identifier, get the closest chunk and return it

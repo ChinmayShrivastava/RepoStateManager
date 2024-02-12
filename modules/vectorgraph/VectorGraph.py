@@ -13,12 +13,14 @@ class VectorGraph(BaseNetworkXGraph, BaseChromadbStore):
     def __init__(
         self,
         graph: nx.Graph,
-        collection,
+        insights_collection,
+        chunks_collection,
         llm = OpenAI(model="gpt-3.5-turbo"),
         verbose: bool = True
     ):
         self.graph = graph
-        self.collection = collection
+        self.collection = insights_collection
+        self.chunks_collection = chunks_collection
         self.llm = llm
         self.verbose = verbose
         if self.verbose:
@@ -27,7 +29,7 @@ class VectorGraph(BaseNetworkXGraph, BaseChromadbStore):
 
     @classmethod
     def from_persisting_dir(
-        cls, 
+        cls,
         persisting_dir: str,
         verbose: bool = True
     ):
@@ -36,12 +38,13 @@ class VectorGraph(BaseNetworkXGraph, BaseChromadbStore):
             logger = logging.getLogger(__name__)
             logger.info("Loading graph from persisting directory")
         graph = pickle.load(open(persisting_dir+"/connections/graph.pkl", "rb"))
-        collection = return_collection(path=persisting_dir+"/indices/", collection_name="insight_engine")
+        insights_collection = return_collection(path=persisting_dir+"/indices/", collection_name="insight_engine")
+        chunks_collection = return_collection(path=persisting_dir+"/indices/", collection_name="chunk_engine")
         # log
         if verbose:
             logger.info(f"Graph loaded from {persisting_dir}")
             logger.info(f"Vector index loaded from {persisting_dir}")
-        return cls(graph=graph, collection=collection, verbose=verbose)
+        return cls(graph=graph, insights_collection=insights_collection, chunks_collection=chunks_collection, verbose=verbose)
     
     def __str__(self):
         len_graph_nodes = len(self.graph.nodes)

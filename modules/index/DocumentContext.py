@@ -4,7 +4,7 @@ from modules.prompts.extraction.EXTRACT import DEFAULT_EXTRACT_UNIQUE_IDENTIFIER
 from modules.index.dispatch import DEFAULT_DOCUMENT_CONTEXT_DISPATCH, document_context_dependency_check, dispatch_next_step
 from modules.vectordb.chromadb import return_collection, add_entries_to_collection
 from modules.vectorgraph.VectorGraph import VectorGraph
-from .utilities import connect_identifier_node_to_table_root, is_table_name, parse_tuple_string, parse_tuple_list_string, add_unique_identifier_node
+from .utils import connect_identifier_node_to_table_root, is_table_name, parse_tuple_string, parse_tuple_list_string, add_unique_identifier_node
 import networkx as nx
 from llama_index.llms import OpenAI
 import logging
@@ -20,8 +20,8 @@ load_dotenv()
 class DocumentContext:
 
     vector_collection_name = {
-        "insights": "insight_engine",
-        "chunks": "chunk_engine",
+        "insight_engine": "insight_engine",
+        "chunk_engine": "chunk_engine",
     }
 
     def __init__(
@@ -341,8 +341,10 @@ class DocumentContext:
         return
     
     def add_vector_index(self):
-        document_context_dependency_check('add_vector_index', self.dispatch)
-        collection = return_collection(path=self.vector_collection_dir, collection_name=self.vector_collection_name['insights'])
+
+        # insight engine
+        document_context_dependency_check('insight_engine', self.dispatch)
+        collection = return_collection(path=self.vector_collection_dir, collection_name=self.vector_collection_name['insight_engine'])
         # add all the nodes to the collection, nodes that are of the type insight
         # get all the nodes that are of the type insight
         insight_nodes = [node for node in self.G.nodes if self.G.nodes[node]['type'] == 'insight']
@@ -364,9 +366,42 @@ class DocumentContext:
             collection=collection
         )
         # log
-        logging.info('Added vector index.')
+        logging.info('Added insights to the insight engine.')
         # update the dispatch
-        self.dispatch['add_vector_index'] = True
+        self.dispatch['insight_engine'] = True
+        self.update_state()
+
+        # chunk engine
+        document_context_dependency_check('chunk_engine', self.dispatch)
+        collection = return_collection(path=self.vector_collection_dir, collection_name=self.vector_collection_name['chunk_engine'])
+        # add all the nodes to the collection, nodes that are of the type chunk
+        # get all the nodes that are of the type chunk
+        chunk_nodes = [node for node in self.G.nodes if self.G.nodes[node]['type'] == 'chunk']
+        # get the node values
+        chunk_node_values = [self.G.nodes[node]['value'] for node in chunk_nodes]
+        # get chunk metadata
+        chunk_node_metadata = [self.G.nodes[node]['metadata'] for node in chunk_nodes]
+        # get the nodeids
+        chunk_nodeids = [str(node) for node in chunk_nodes]
+        # get the metadata
+        chunk_node_metadata = [
+            {
+                "id": node,
+                "chunk_no": metadata['chunk_no'],
+                "page_no": metadata['page_no'],
+            } for node, metadata in zip(chunk_nodeids, chunk_node_metadata)
+        ]
+        # add the entries to the collection
+        self.collection = add_entries_to_collection(
+            docs=chunk_node_values,
+            metadata=chunk_node_metadata,
+            ids=chunk_nodeids,
+            collection=collection
+        )
+        # log
+        logging.info('Added chunks to the chunk engine.')
+        # update the dispatch
+        self.dispatch['chunk_engine'] = True
         self.update_state()
         return
     

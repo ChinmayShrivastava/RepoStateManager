@@ -33,7 +33,7 @@ Input:
 2.3.3.3.1 Install ceiling-level Storage sprinklers under unobstructed ceiling construction in accordance with
 the linear and area spacing guidelines in Tables 1 and 2.
 Output:
-[(2.3.3.3, table 1),(2.3.3.3, table 2)]
+[(2.3.3.3.1, table 1),(2.3.3.3.1, table 2)]
 Example 2:
 Input:
 2.3.3.1.1 See Section 2.3.3.7 for the protection design guidelines of ceiling-level Storage sprinklers. Tables
